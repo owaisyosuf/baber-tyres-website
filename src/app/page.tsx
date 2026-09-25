@@ -1,8 +1,46 @@
-// TEMPORARY — design-token + primitive proof for T002/T004. Replaced by the real homepage in T016.
+// TEMPORARY — design-token + primitive + icon proof for T002/T004/T005. Replaced by the real homepage in T016.
 
 import { Badge, Button, Card, Heading } from "@/components/ui";
+import {
+  AlignmentIcon,
+  BalancingIcon,
+  CarIcon,
+  CheckIcon,
+  ChevronIcon,
+  ClockIcon,
+  CloseIcon,
+  FilterIcon,
+  FittingIcon,
+  ForkliftIcon,
+  LocationIcon,
+  OffRoadIcon,
+  PhoneIcon,
+  RadialGlow,
+  SuvIcon,
+  TreadMotif,
+  TruckIcon,
+  WhatsAppIcon,
+} from "@/components/icons";
 import { siteConfig } from "@/lib/site";
 import { genericWhatsAppLink } from "@/lib/whatsapp";
+
+const icons = [
+  ["WhatsApp", WhatsAppIcon],
+  ["Phone", PhoneIcon],
+  ["Location", LocationIcon],
+  ["Clock", ClockIcon],
+  ["Car", CarIcon],
+  ["SUV", SuvIcon],
+  ["Truck", TruckIcon],
+  ["Forklift", ForkliftIcon],
+  ["Off-road", OffRoadIcon],
+  ["Fitting", FittingIcon],
+  ["Alignment", AlignmentIcon],
+  ["Balancing", BalancingIcon],
+  ["Filter", FilterIcon],
+  ["Close", CloseIcon],
+  ["Check", CheckIcon],
+] as const;
 
 const colors = [
   ["background", "#0A0A0B"],
@@ -104,13 +142,23 @@ export default function TokenProof() {
         <p className="mt-6 text-label uppercase text-muted">Buttons</p>
         <div className="mt-3 flex flex-wrap gap-3">
           <Button variant="primary">Browse Tyres</Button>
-          <Button variant="whatsapp" href={genericWhatsAppLink()}>
+          <Button
+            variant="whatsapp"
+            href={genericWhatsAppLink()}
+            icon={<WhatsAppIcon />}
+          >
             Inquire on WhatsApp
           </Button>
-          <Button variant="secondary" href={`tel:${siteConfig.phoneE164}`}>
+          <Button
+            variant="secondary"
+            href={`tel:${siteConfig.phoneE164}`}
+            icon={<PhoneIcon />}
+          >
             Call
           </Button>
-          <Button variant="ghost">View all</Button>
+          <Button variant="ghost" icon={<ChevronIcon direction="right" />} iconPosition="right">
+            View all
+          </Button>
           <Button variant="primary" disabled>
             Disabled
           </Button>
@@ -145,6 +193,42 @@ export default function TokenProof() {
             <Heading level={3}>Flat</Heading>
             <p className="mt-2 text-small text-muted">Background only.</p>
           </Card>
+        </div>
+      </section>
+
+      {/* T005 icons, tread motif, and radial glow. */}
+      <section className="mt-16 mb-24">
+        <Heading level={2} eyebrow="T005">
+          Icon set &amp; motifs
+        </Heading>
+
+        <p className="mt-6 text-label uppercase text-muted">Icons — 24×24, 1.5px stroke</p>
+        <div className="mt-3 grid grid-cols-3 gap-4 sm:grid-cols-5 lg:grid-cols-8">
+          {icons.map(([name, IconComponent]) => (
+            <div
+              key={name}
+              className="flex flex-col items-center gap-2 rounded-lg border border-border bg-surface p-4"
+            >
+              <IconComponent className="text-accent" />
+              <p className="text-small text-muted">{name}</p>
+            </div>
+          ))}
+        </div>
+
+        <p className="mt-8 text-label uppercase text-muted">Radial glow</p>
+        <div className="relative mt-3 h-48 overflow-hidden rounded-lg border border-border bg-background">
+          <RadialGlow />
+          <div className="relative flex h-full items-center justify-center">
+            <p className="text-h3">Hero backdrop candidate</p>
+          </div>
+        </div>
+
+        <p className="mt-8 text-label uppercase text-muted">Tread motif</p>
+        <div className="relative mt-3 h-48 overflow-hidden rounded-lg border border-border bg-surface text-border-strong">
+          <TreadMotif className="absolute inset-0 opacity-40" />
+          <div className="relative flex h-full items-center justify-center">
+            <p className="text-h3 text-text">Section divider candidate</p>
+          </div>
         </div>
       </section>
     </main>
