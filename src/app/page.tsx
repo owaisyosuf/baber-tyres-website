@@ -1,4 +1,8 @@
-// TEMPORARY — design-token proof for T002. Replaced by the real homepage in T016.
+// TEMPORARY — design-token + primitive proof for T002/T004. Replaced by the real homepage in T016.
+
+import { Badge, Button, Card, Heading } from "@/components/ui";
+import { siteConfig } from "@/lib/site";
+import { genericWhatsAppLink } from "@/lib/whatsapp";
 
 const colors = [
   ["background", "#0A0A0B"],
@@ -77,7 +81,7 @@ export default function TokenProof() {
         </div>
       </section>
 
-      <section className="mt-16 mb-24">
+      <section className="mt-16">
         <h2 className="text-h2">Contrast check</h2>
         <div className="mt-6 space-y-3">
           <p className="text-body">text on background — 16.5:1</p>
@@ -88,6 +92,59 @@ export default function TokenProof() {
           <p className="inline-block rounded-md bg-accent px-4 py-2 text-body font-semibold text-background">
             background on accent — 8.9:1
           </p>
+        </div>
+      </section>
+
+      {/* T004 primitives — exercised here so real usage compiles and renders, not just isolated files. */}
+      <section className="mt-16 mb-24">
+        <Heading level={2} eyebrow="T004">
+          UI primitives
+        </Heading>
+
+        <p className="mt-6 text-label uppercase text-muted">Buttons</p>
+        <div className="mt-3 flex flex-wrap gap-3">
+          <Button variant="primary">Browse Tyres</Button>
+          <Button variant="whatsapp" href={genericWhatsAppLink()}>
+            Inquire on WhatsApp
+          </Button>
+          <Button variant="secondary" href={`tel:${siteConfig.phoneE164}`}>
+            Call
+          </Button>
+          <Button variant="ghost">View all</Button>
+          <Button variant="primary" disabled>
+            Disabled
+          </Button>
+        </div>
+
+        <p className="mt-8 text-label uppercase text-muted">Badges</p>
+        <div className="mt-3 flex flex-wrap gap-3">
+          <Badge variant="solid-accent">Importer</Badge>
+          <Badge variant="outline-accent">Dealer</Badge>
+          <Badge variant="outline-muted">Stocked</Badge>
+          <Badge variant="subtle-success" dot>
+            In Stock
+          </Badge>
+          <Badge variant="subtle-neutral" dot>
+            Out of Stock
+          </Badge>
+        </div>
+
+        <p className="mt-8 text-label uppercase text-muted">Cards</p>
+        <div className="mt-3 grid gap-4 sm:grid-cols-3">
+          <Card elevation="raised" interactive className="p-6">
+            <Heading level={3}>Raised, interactive</Heading>
+            <p className="mt-2 text-small text-muted">Hover to see the lift.</p>
+          </Card>
+          <Card elevation="accent" className="p-6">
+            <Heading level={3} className="text-accent">
+              Accent
+            </Heading>
+            <p className="mt-2 text-small text-muted">Amber border + glow.</p>
+          </Card>
+          <Card elevation="flat" className="p-6">
+            <Heading level={3}>Flat</Heading>
+            <p className="mt-2 text-small text-muted">Background only.</p>
+          </Card>
         </div>
       </section>
     </main>
