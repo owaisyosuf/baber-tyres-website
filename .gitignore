@@ -20,6 +20,8 @@ next-env.d.ts
 
 # sanity
 .sanity/
+# intermediate for `npm run typegen`; src/sanity/types.ts is the committed output
+schema.json
 
 # logs
 *.log
