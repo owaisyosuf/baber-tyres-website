@@ -155,6 +155,43 @@ export async function getProducts(
   return { items, total, page, pageSize };
 }
 
+/* Filter options ------------------------------------------------------------ */
+
+// What the catalog filter can offer: every brand and category, plus the sizes
+// that exist among published products so the size selects never list a size
+// nobody stocks. Sorted in getFilterOptions, since GROQ has no scalar sort that
+// is worth relying on.
+export const FILTER_OPTIONS_QUERY = defineQuery(`{
+  "brands": *[_type == "brand"] | order(select(relationship == "importer" => 0, relationship == "dealer" => 1, 2) asc, displayOrder asc) {
+    name,
+    "slug": slug.current,
+    relationship
+  },
+  "categories": *[_type == "category"] | order(displayOrder asc) {
+    name,
+    "slug": slug.current
+  },
+  "widths": array::unique(*[_type == "product" && defined(width)].width),
+  "profiles": array::unique(*[_type == "product" && defined(profile)].profile),
+  "rims": array::unique(*[_type == "product" && defined(rim)].rim)
+}`);
+
+const ascending = (values: number[] | null) => [...(values ?? [])].sort((a, b) => a - b);
+
+export async function getFilterOptions() {
+  "use cache";
+  cacheTag("product", "brand", "category");
+  cacheLife("max");
+  const options = await client.fetch(FILTER_OPTIONS_QUERY);
+  return {
+    brands: options.brands,
+    categories: options.categories,
+    widths: ascending(options.widths),
+    profiles: ascending(options.profiles),
+    rims: ascending(options.rims),
+  };
+}
+
 /* Product detail ------------------------------------------------------------- */
 
 export const PRODUCT_BY_SLUG = defineQuery(`*[_type == "product" && slug.current == $slug][0]{
