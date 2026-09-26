@@ -95,6 +95,8 @@
     -webkit-font-smoothing: antialiased;
   }
 
+    /* The site is dark-only: native controls (checkboxes, selects, scrollbars) follow it */
+    color-scheme: dark;
   h1,
   h2,
   h3,
