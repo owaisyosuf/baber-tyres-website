@@ -110,6 +110,11 @@
     border-radius: 2px;
   }
 
+  /* Native modal <dialog> (mobile nav) leaves the page scrollable behind it */
+  body:has(dialog[open]) {
+    overflow: hidden;
+  }
+
   ::selection {
     background-color: var(--color-accent);
     color: var(--color-background);
