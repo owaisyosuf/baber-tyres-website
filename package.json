@@ -9,7 +9,8 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typegen": "jiti scripts/generate-types.ts"
+    "typegen": "jiti scripts/generate-types.ts",
+    "seed": "jiti scripts/seed.ts"
   },
   "dependencies": {
     "@sanity/image-url": "^2.1.1",
