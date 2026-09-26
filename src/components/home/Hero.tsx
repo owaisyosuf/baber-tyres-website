@@ -1,5 +1,7 @@
 import { ChevronIcon, LocationIcon, RadialGlow, TreadMotif, WhatsAppIcon } from "@/components/icons";
 import { Button, Container, Section } from "@/components/ui";
+import { HeroSpotlight } from "./HeroSpotlight";
+import { TyreGraphic } from "./TyreGraphic";
 import { getShopSettings } from "@/lib/sanity/settings";
 import { siteConfig } from "@/lib/site";
 import { buildWhatsAppLink, genericInquiryMessage } from "@/lib/whatsapp";
@@ -26,11 +28,15 @@ export async function Hero() {
       >
         <TreadMotif className="h-full w-full" />
       </div>
+      <TyreGraphic className="pointer-events-none absolute -right-24 top-1/2 hidden aspect-square w-[min(46vw,560px)] -translate-y-1/2 opacity-80 md:block" />
+      <HeroSpotlight />
 
       <Container className="relative">
         <p className="text-label uppercase text-accent">{siteConfig.tagline}</p>
 
-        <h1 className="mt-4 text-display text-text">{settings.shopName}</h1>
+        <h1 className="mt-4 w-fit bg-linear-to-r from-[color-mix(in_srgb,var(--color-text),var(--color-accent-glow)_22%)] via-accent-glow via-55% to-accent bg-clip-text text-display text-transparent">
+          {settings.shopName}
+        </h1>
 
         <p className="mt-6 max-w-[42ch] text-body-lg text-muted">
           Car, SUV, truck, forklift and off-road tyres from the brands we import

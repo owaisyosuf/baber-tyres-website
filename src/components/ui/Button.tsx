@@ -29,7 +29,7 @@ export type ButtonProps = ButtonAsButtonProps | ButtonAsLinkProps;
 
 const baseClasses =
   "inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-md px-5 text-body font-semibold " +
-  "transition-[box-shadow,color,border-color,background-color,filter] duration-150 ease-out-soft " +
+  "transition-[box-shadow,color,border-color,background-color,filter,scale] duration-150 ease-out-soft hover:scale-[1.02] motion-reduce:hover:scale-100 " +
   "focus-visible:outline-2 focus-visible:outline-accent focus-visible:outline-offset-2 " +
   "disabled:pointer-events-none disabled:opacity-40 disabled:shadow-none";
 
