@@ -23,7 +23,7 @@ const fetchFunctions = source
 
 describe("GROQ queries", () => {
   it("finds every query and fetch wrapper", () => {
-    expect(groqLiterals).toHaveLength(11);
+    expect(groqLiterals).toHaveLength(12);
     expect(fetchFunctions.map((f) => f.name)).toEqual([
       "getHomepageData",
       "getProducts",
@@ -31,6 +31,7 @@ describe("GROQ queries", () => {
       "getRelatedProducts",
       "getBrands",
       "getBrandBySlug",
+      "getCategories",
       "getCategoryBySlug",
       "getServices",
       "getSettings",

@@ -30,3 +30,13 @@ export function formatTyreSize(size: TyreSizeInput): string {
   }
   return `${size.width}/${size.profile} R${size.rim}`;
 }
+
+/**
+ * E.164 → the local form people dial and read, e.g. "+923001234567" →
+ * "0300-1234567". Only Pakistani mobile numbers are reformatted; anything
+ * else is returned unchanged rather than guessed at.
+ */
+export function formatPhoneDisplay(e164: string): string {
+  const match = /^\+92(3\d{2})(\d{7})$/.exec(e164.trim());
+  return match ? `0${match[1]}-${match[2]}` : e164;
+}

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { formatPKR, formatTyreSize } from "./format";
+import { formatPhoneDisplay, formatPKR, formatTyreSize } from "./format";
+import { siteConfig } from "./site";
 
 describe("formatPKR", () => {
   it("formats with the PKR prefix and thousands separators", () => {
@@ -45,5 +46,21 @@ describe("formatTyreSize", () => {
         sizeLabelOverride: "   ",
       }),
     ).toBe("145/70 R12");
+  });
+});
+
+describe("formatPhoneDisplay", () => {
+  it("turns the shop's E.164 number into the display form the owner gave", () => {
+    expect(formatPhoneDisplay(siteConfig.phoneE164)).toBe(siteConfig.phoneDisplay);
+  });
+
+  it("reformats any Pakistani mobile number to local dialling form", () => {
+    expect(formatPhoneDisplay("+923001234567")).toBe("0300-1234567");
+  });
+
+  it("returns numbers it does not recognise unchanged", () => {
+    expect(formatPhoneDisplay("+14155550123")).toBe("+14155550123");
+    expect(formatPhoneDisplay("+9221111222")).toBe("+9221111222");
+    expect(formatPhoneDisplay("")).toBe("");
   });
 });

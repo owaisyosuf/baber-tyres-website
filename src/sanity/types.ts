@@ -435,7 +435,7 @@ export type RELATED_PRODUCTS_QUERY_RESULT = Array<{
 
 // Source: src/lib/sanity/queries.ts
 // Variable: BRANDS_QUERY
-// Query: *[_type == "brand"] | order(relationship asc, displayOrder asc) {  _id,  name,  "slug": slug.current,  relationship,  logo,  description}
+// Query: *[_type == "brand"] | order(select(relationship == "importer" => 0, relationship == "dealer" => 1, 2) asc, displayOrder asc) {  _id,  name,  "slug": slug.current,  relationship,  logo,  description}
 export type BRANDS_QUERY_RESULT = Array<{
   _id: string;
   name: string;
@@ -487,6 +487,16 @@ export type BRAND_BY_SLUG_RESULT = {
     }>;
   }>;
 } | null;
+
+// Source: src/lib/sanity/queries.ts
+// Variable: CATEGORIES_QUERY
+// Query: *[_type == "category"] | order(displayOrder asc) {  _id,  name,  "slug": slug.current,  icon}
+export type CATEGORIES_QUERY_RESULT = Array<{
+  _id: string;
+  name: string;
+  slug: string;
+  icon: "car" | "forklift" | "offroad" | "suv" | "truck";
+}>;
 
 // Source: src/lib/sanity/queries.ts
 // Variable: CATEGORY_BY_SLUG
@@ -592,8 +602,9 @@ declare global {
     "count(*[\n  _type == \"product\"\n  && (!defined($brandSlugs) || brand->slug.current in $brandSlugs)\n  && (!defined($categorySlug) || category->slug.current == $categorySlug)\n  && (!defined($width) || width == $width)\n  && (!defined($profile) || profile == $profile)\n  && (!defined($rim) || rim == $rim)\n  && (!defined($minPrice) || price >= $minPrice)\n  && (!defined($maxPrice) || price <= $maxPrice)\n])": PRODUCTS_COUNT_QUERY_RESULT;
     "*[_type == \"product\" && slug.current == $slug][0]{\n  _id,\n  name,\n  \"slug\": slug.current,\n  price,\n  inStock,\n  featured,\n  sizeLabelOverride,\n  width,\n  profile,\n  rim,\n  loadIndex,\n  speedRating,\n  description,\n  images[]{ alt, asset },\n  brand->{ _id, name, \"slug\": slug.current, relationship, logo },\n  category->{ _id, name, \"slug\": slug.current },\n  seo { title, description }\n}": PRODUCT_BY_SLUG_RESULT;
     "*[\n  _type == \"product\"\n  && slug.current != $slug\n  && (brand._ref == $brandId || category._ref == $categoryId)\n] | order(brand._ref == $brandId desc, _createdAt desc) [0...4] {\n  _id,\n  name,\n  \"slug\": slug.current,\n  price,\n  inStock,\n  sizeLabelOverride,\n  width,\n  profile,\n  rim,\n  images[]{ alt, asset },\n  brand->{ name, \"slug\": slug.current, relationship }\n}": RELATED_PRODUCTS_QUERY_RESULT;
-    "*[_type == \"brand\"] | order(relationship asc, displayOrder asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  relationship,\n  logo,\n  description\n}": BRANDS_QUERY_RESULT;
+    "*[_type == \"brand\"] | order(select(relationship == \"importer\" => 0, relationship == \"dealer\" => 1, 2) asc, displayOrder asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  relationship,\n  logo,\n  description\n}": BRANDS_QUERY_RESULT;
     "*[_type == \"brand\" && slug.current == $slug][0]{\n  _id,\n  name,\n  \"slug\": slug.current,\n  relationship,\n  logo,\n  description,\n  seo { title, description },\n  \"products\": *[_type == \"product\" && references(^._id)] | order(featured desc, _createdAt desc) {\n    _id,\n    name,\n    \"slug\": slug.current,\n    price,\n    inStock,\n    sizeLabelOverride,\n    width,\n    profile,\n    rim,\n    images[]{ alt, asset }\n  }\n}": BRAND_BY_SLUG_RESULT;
+    "*[_type == \"category\"] | order(displayOrder asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  icon\n}": CATEGORIES_QUERY_RESULT;
     "*[_type == \"category\" && slug.current == $slug][0]{\n  _id,\n  name,\n  \"slug\": slug.current,\n  description,\n  icon,\n  seo { title, description },\n  \"products\": *[_type == \"product\" && references(^._id)] | order(featured desc, _createdAt desc) {\n    _id,\n    name,\n    \"slug\": slug.current,\n    price,\n    inStock,\n    sizeLabelOverride,\n    width,\n    profile,\n    rim,\n    images[]{ alt, asset },\n    brand->{ name, \"slug\": slug.current, relationship }\n  }\n}": CATEGORY_BY_SLUG_RESULT;
     "*[_type == \"service\"] | order(displayOrder asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  description,\n  icon,\n  seo { title, description }\n}": SERVICES_QUERY_RESULT;
     "*[_type == \"siteSettings\"][0]{\n  shopName,\n  addressLine,\n  city,\n  phone,\n  whatsapp,\n  hoursOpen,\n  hoursClose,\n  openDays,\n  closedDay,\n  deliveryNote,\n  mapLat,\n  mapLng,\n  mapEmbedUrl,\n  googleReviewUrl,\n  defaultSeo { title, description }\n}": SETTINGS_QUERY_RESULT;

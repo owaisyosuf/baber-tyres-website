@@ -215,7 +215,7 @@ export async function getRelatedProducts(params: {
 
 /* Brands ------------------------------------------------------------------------ */
 
-export const BRANDS_QUERY = defineQuery(`*[_type == "brand"] | order(relationship asc, displayOrder asc) {
+export const BRANDS_QUERY = defineQuery(`*[_type == "brand"] | order(select(relationship == "importer" => 0, relationship == "dealer" => 1, 2) asc, displayOrder asc) {
   _id,
   name,
   "slug": slug.current,
@@ -261,6 +261,20 @@ export async function getBrandBySlug(slug: string) {
 }
 
 /* Categories --------------------------------------------------------------------- */
+
+export const CATEGORIES_QUERY = defineQuery(`*[_type == "category"] | order(displayOrder asc) {
+  _id,
+  name,
+  "slug": slug.current,
+  icon
+}`);
+
+export async function getCategories() {
+  "use cache";
+  cacheTag("category");
+  cacheLife("max");
+  return client.fetch(CATEGORIES_QUERY);
+}
 
 export const CATEGORY_BY_SLUG = defineQuery(`*[_type == "category" && slug.current == $slug][0]{
   _id,
