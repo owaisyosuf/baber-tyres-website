@@ -2,6 +2,8 @@ export { Button } from "./Button";
 export type { ButtonProps } from "./Button";
 export { Badge } from "./Badge";
 export type { BadgeVariant } from "./Badge";
+export { Breadcrumb } from "./Breadcrumb";
+export type { BreadcrumbItem } from "./Breadcrumb";
 export { Card } from "./Card";
 export { Container } from "./Container";
 export { Section } from "./Section";

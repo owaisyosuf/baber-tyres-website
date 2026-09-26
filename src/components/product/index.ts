@@ -3,5 +3,8 @@ export type { BrandRelationship } from "./BrandBadge";
 export { PriceTag } from "./PriceTag";
 export { ProductCard } from "./ProductCard";
 export type { ProductCardProduct } from "./ProductCard";
+export { ProductGallery } from "./ProductGallery";
+export type { ProductGalleryImage } from "./ProductGallery";
 export { ProductGrid } from "./ProductGrid";
+export { SpecsTable } from "./SpecsTable";
 export { StockBadge } from "./StockBadge";

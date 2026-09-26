@@ -428,8 +428,15 @@ export type PRODUCT_BY_SLUG_RESULT = {
 } | null;
 
 // Source: src/lib/sanity/queries.ts
+// Variable: PRODUCT_SLUGS_QUERY
+// Query: *[_type == "product"]{ "slug": slug.current }
+export type PRODUCT_SLUGS_QUERY_RESULT = Array<{
+  slug: string;
+}>;
+
+// Source: src/lib/sanity/queries.ts
 // Variable: RELATED_PRODUCTS_QUERY
-// Query: *[  _type == "product"  && slug.current != $slug  && (brand._ref == $brandId || category._ref == $categoryId)] | order(brand._ref == $brandId desc, _createdAt desc) [0...4] {  _id,  name,  "slug": slug.current,  price,  inStock,  sizeLabelOverride,  width,  profile,  rim,  images[]{ alt, asset },  brand->{ name, "slug": slug.current, relationship }}
+// Query: *[  _type == "product"  && slug.current != $slug  && (brand._ref == $brandId || category._ref == $categoryId)] | order((brand._ref == $brandId) desc, _createdAt desc) [0...4] {  _id,  name,  "slug": slug.current,  price,  inStock,  sizeLabelOverride,  width,  profile,  rim,  images[]{ alt, asset },  brand->{ name, "slug": slug.current, relationship }}
 export type RELATED_PRODUCTS_QUERY_RESULT = Array<{
   _id: string;
   name: string;
@@ -620,7 +627,8 @@ declare global {
     "count(*[\n  _type == \"product\"\n  && (!defined($brandSlugs) || brand->slug.current in $brandSlugs)\n  && (!defined($categorySlug) || category->slug.current == $categorySlug)\n  && (!defined($width) || width == $width)\n  && (!defined($profile) || profile == $profile)\n  && (!defined($rim) || rim == $rim)\n  && (!defined($minPrice) || price >= $minPrice)\n  && (!defined($maxPrice) || price <= $maxPrice)\n])": PRODUCTS_COUNT_QUERY_RESULT;
     "{\n  \"brands\": *[_type == \"brand\"] | order(select(relationship == \"importer\" => 0, relationship == \"dealer\" => 1, 2) asc, displayOrder asc) {\n    name,\n    \"slug\": slug.current,\n    relationship\n  },\n  \"categories\": *[_type == \"category\"] | order(displayOrder asc) {\n    name,\n    \"slug\": slug.current\n  },\n  \"widths\": array::unique(*[_type == \"product\" && defined(width)].width),\n  \"profiles\": array::unique(*[_type == \"product\" && defined(profile)].profile),\n  \"rims\": array::unique(*[_type == \"product\" && defined(rim)].rim)\n}": FILTER_OPTIONS_QUERY_RESULT;
     "*[_type == \"product\" && slug.current == $slug][0]{\n  _id,\n  name,\n  \"slug\": slug.current,\n  price,\n  inStock,\n  featured,\n  sizeLabelOverride,\n  width,\n  profile,\n  rim,\n  loadIndex,\n  speedRating,\n  description,\n  images[]{ alt, asset },\n  brand->{ _id, name, \"slug\": slug.current, relationship, logo },\n  category->{ _id, name, \"slug\": slug.current },\n  seo { title, description }\n}": PRODUCT_BY_SLUG_RESULT;
-    "*[\n  _type == \"product\"\n  && slug.current != $slug\n  && (brand._ref == $brandId || category._ref == $categoryId)\n] | order(brand._ref == $brandId desc, _createdAt desc) [0...4] {\n  _id,\n  name,\n  \"slug\": slug.current,\n  price,\n  inStock,\n  sizeLabelOverride,\n  width,\n  profile,\n  rim,\n  images[]{ alt, asset },\n  brand->{ name, \"slug\": slug.current, relationship }\n}": RELATED_PRODUCTS_QUERY_RESULT;
+    "*[_type == \"product\"]{ \"slug\": slug.current }": PRODUCT_SLUGS_QUERY_RESULT;
+    "*[\n  _type == \"product\"\n  && slug.current != $slug\n  && (brand._ref == $brandId || category._ref == $categoryId)\n] | order((brand._ref == $brandId) desc, _createdAt desc) [0...4] {\n  _id,\n  name,\n  \"slug\": slug.current,\n  price,\n  inStock,\n  sizeLabelOverride,\n  width,\n  profile,\n  rim,\n  images[]{ alt, asset },\n  brand->{ name, \"slug\": slug.current, relationship }\n}": RELATED_PRODUCTS_QUERY_RESULT;
     "*[_type == \"brand\"] | order(select(relationship == \"importer\" => 0, relationship == \"dealer\" => 1, 2) asc, displayOrder asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  relationship,\n  logo,\n  description\n}": BRANDS_QUERY_RESULT;
     "*[_type == \"brand\" && slug.current == $slug][0]{\n  _id,\n  name,\n  \"slug\": slug.current,\n  relationship,\n  logo,\n  description,\n  seo { title, description },\n  \"products\": *[_type == \"product\" && references(^._id)] | order(featured desc, _createdAt desc) {\n    _id,\n    name,\n    \"slug\": slug.current,\n    price,\n    inStock,\n    sizeLabelOverride,\n    width,\n    profile,\n    rim,\n    images[]{ alt, asset }\n  }\n}": BRAND_BY_SLUG_RESULT;
     "*[_type == \"category\"] | order(displayOrder asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  icon\n}": CATEGORIES_QUERY_RESULT;

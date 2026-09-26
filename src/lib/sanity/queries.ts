@@ -221,11 +221,22 @@ export async function getProductBySlug(slug: string) {
   return client.fetch(PRODUCT_BY_SLUG, { slug });
 }
 
+// generateStaticParams for /tyres/[slug] — slugs only, no need for the full
+// product shape PRODUCT_BY_SLUG projects.
+export const PRODUCT_SLUGS_QUERY = defineQuery(`*[_type == "product"]{ "slug": slug.current }`);
+
+export async function getProductSlugs() {
+  "use cache";
+  cacheTag("product");
+  cacheLife("max");
+  return client.fetch(PRODUCT_SLUGS_QUERY);
+}
+
 export const RELATED_PRODUCTS_QUERY = defineQuery(`*[
   _type == "product"
   && slug.current != $slug
   && (brand._ref == $brandId || category._ref == $categoryId)
-] | order(brand._ref == $brandId desc, _createdAt desc) [0...4] {
+] | order((brand._ref == $brandId) desc, _createdAt desc) [0...4] {
   _id,
   name,
   "slug": slug.current,
