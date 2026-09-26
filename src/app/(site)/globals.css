@@ -74,6 +74,17 @@
 
   /* Motion — design.md §7.6 */
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Filter sheet: slides up, 250ms, ease-out */
+  --animate-sheet-up: sheet-up 250ms var(--ease-out-soft);
+  @keyframes sheet-up {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
 }
 
 /* =============================================================================
@@ -84,6 +95,8 @@
   html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    /* The site is dark-only: native controls (checkboxes, selects, scrollbars) follow it */
+    color-scheme: dark;
   }
 
   body {
@@ -95,8 +108,6 @@
     -webkit-font-smoothing: antialiased;
   }
 
-    /* The site is dark-only: native controls (checkboxes, selects, scrollbars) follow it */
-    color-scheme: dark;
   h1,
   h2,
   h3,

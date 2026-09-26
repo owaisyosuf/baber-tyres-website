@@ -11,6 +11,8 @@ interface ButtonBaseProps {
   className?: string;
   children: ReactNode;
   "aria-label"?: string;
+  /** For a button that opens a dialog (the mobile filter sheet). */
+  "aria-haspopup"?: "dialog";
 }
 
 interface ButtonAsButtonProps extends ButtonBaseProps {
@@ -132,6 +134,7 @@ export function Button(props: ButtonProps) {
       onClick={onClick}
       disabled={disabled}
       aria-label={ariaLabel}
+      aria-haspopup={props["aria-haspopup"]}
     >
       {content}
     </button>

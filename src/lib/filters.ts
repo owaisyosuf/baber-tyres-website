@@ -11,6 +11,9 @@ import type { ProductFilters } from "./sanity/queries";
  *   /tyres?brand=yokohama,dunlop&category=truck&width=185&profile=65&rim=15&min=5000&max=40000&page=2
  */
 
+/** Where the catalog lives; every filter URL is this path plus a query string. */
+export const CATALOG_PATH = "/tyres";
+
 export type SearchParamsInput =
   | URLSearchParams
   | Record<string, string | string[] | undefined>;
@@ -134,6 +137,12 @@ export function buildCatalogQuery(filters: ProductFilters, page = 1): string {
   if (filters.maxPrice !== undefined) parts.push(`max=${filters.maxPrice}`);
   if (page > 1) parts.push(`page=${page}`);
   return parts.join("&");
+}
+
+/** The catalog URL for a set of filters: the path, plus `?query` when any filter is set. */
+export function catalogHref(filters: ProductFilters, page = 1): string {
+  const query = buildCatalogQuery(filters, page);
+  return query ? `${CATALOG_PATH}?${query}` : CATALOG_PATH;
 }
 
 /**
