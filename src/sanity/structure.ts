@@ -1,4 +1,5 @@
 import type { StructureResolver } from "sanity/structure";
+import { apiVersion } from "@/lib/sanity/env";
 
 /**
  * Custom desk structure — T008. Pins siteSettings as a singleton (Sanity has
@@ -37,7 +38,8 @@ export const structure: StructureResolver = (S) =>
                 .title("Products")
                 .schemaType("product")
                 .filter('_type == "product" && category._ref == $categoryId')
-                .params({ categoryId }),
+                .params({ categoryId })
+                .apiVersion(apiVersion),
             ),
         ),
       S.listItem()
@@ -59,7 +61,8 @@ export const structure: StructureResolver = (S) =>
                   S.documentList()
                     .title("Importers")
                     .schemaType("brand")
-                    .filter('_type == "brand" && relationship == "importer"'),
+                    .filter('_type == "brand" && relationship == "importer"')
+                    .apiVersion(apiVersion),
                 ),
               S.listItem()
                 .title("Dealers")
@@ -67,7 +70,8 @@ export const structure: StructureResolver = (S) =>
                   S.documentList()
                     .title("Dealers")
                     .schemaType("brand")
-                    .filter('_type == "brand" && relationship == "dealer"'),
+                    .filter('_type == "brand" && relationship == "dealer"')
+                    .apiVersion(apiVersion),
                 ),
               S.listItem()
                 .title("Stocked")
@@ -75,7 +79,8 @@ export const structure: StructureResolver = (S) =>
                   S.documentList()
                     .title("Stocked")
                     .schemaType("brand")
-                    .filter('_type == "brand" && relationship == "stocked"'),
+                    .filter('_type == "brand" && relationship == "stocked"')
+                    .apiVersion(apiVersion),
                 ),
               S.divider(),
               S.listItem()
