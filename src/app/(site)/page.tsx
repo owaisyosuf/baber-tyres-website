@@ -58,7 +58,7 @@ const colors = [
 
 export default function TokenProof() {
   return (
-    <main className="mx-auto w-full max-w-[1280px] px-4 py-16 sm:px-6 lg:px-8">
+    <div className="mx-auto w-full max-w-[1280px] px-4 py-16 sm:px-6 lg:px-8">
       <p className="text-label uppercase text-accent">Design tokens</p>
       <h1 className="mt-3 text-display">Baber Tyres Corporation</h1>
       <p className="mt-4 max-w-[70ch] text-body-lg text-muted">
@@ -231,6 +231,6 @@ export default function TokenProof() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

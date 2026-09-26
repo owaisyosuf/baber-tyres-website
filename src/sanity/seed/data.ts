@@ -38,11 +38,7 @@ export const siteSettingsDoc: SeedDoc = {
   openDays: [...siteConfig.hours.openDays],
   closedDay: siteConfig.hours.closedDay,
   deliveryNote: siteConfig.deliveryNote,
-  defaultSeo: {
-    title: `${siteConfig.shopName} — Tyre Importer & Dealer in ${siteConfig.city}`,
-    description:
-      "Importer and dealer of 20+ tyre brands on M.A. Jinnah Road, Karachi. Car, SUV, truck, forklift and off-road tyres, plus fitting, computerized alignment and balancing.",
-  },
+  defaultSeo: { ...siteConfig.seo },
 };
 
 export const categoryDocs: SeedDoc[] = [

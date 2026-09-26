@@ -17,6 +17,8 @@ export const siteConfig = {
   addressLine: "M.A. Jinnah Road",
   city: "Karachi",
   country: "Pakistan",
+  /** ISO 3166-1 alpha-2 — structured data wants the code, not the name. */
+  countryCode: "PK",
 
   /** Display format, as the owner gave it. */
   phoneDisplay: "0317-4724400",
@@ -40,6 +42,13 @@ export const siteConfig = {
 
   deliveryNote:
     "Delivery available across Karachi — charges apply. WhatsApp us for a quote.",
+
+  /** Default page title/description; the Sanity `defaultSeo` field overrides them. */
+  seo: {
+    title: "Baber Tyres Corporation — Tyre Importer & Dealer in Karachi",
+    description:
+      "Importer and dealer of 20+ tyre brands on M.A. Jinnah Road, Karachi. Car, SUV, truck, forklift and off-road tyres, plus fitting, computerized alignment and balancing.",
+  },
 
   /** Set once OQ-1 (Google Business Profile) is confirmed. */
   googleReviewUrl: null as string | null,

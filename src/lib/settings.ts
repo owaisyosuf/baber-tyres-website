@@ -22,6 +22,10 @@ export interface ShopSettings {
   deliveryNote: string;
   googleReviewUrl: string | null;
   mapEmbedUrl: string | null;
+  mapLat: number | null;
+  mapLng: number | null;
+  /** Default page title and description (Sanity `defaultSeo`, else lib/site.ts). */
+  seo: { title: string; description: string };
 }
 
 const blankToNull = (value: string | null | undefined) =>
@@ -47,5 +51,12 @@ export function resolveSettings(cms: SETTINGS_QUERY_RESULT): ShopSettings {
     deliveryNote: blankToNull(cms?.deliveryNote) ?? siteConfig.deliveryNote,
     googleReviewUrl: blankToNull(cms?.googleReviewUrl),
     mapEmbedUrl: blankToNull(cms?.mapEmbedUrl) ?? siteConfig.mapEmbedUrl,
+    mapLat: cms?.mapLat ?? null,
+    mapLng: cms?.mapLng ?? null,
+    seo: {
+      title: blankToNull(cms?.defaultSeo?.title) ?? siteConfig.seo.title,
+      description:
+        blankToNull(cms?.defaultSeo?.description) ?? siteConfig.seo.description,
+    },
   };
 }
