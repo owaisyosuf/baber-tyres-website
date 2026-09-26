@@ -110,7 +110,14 @@
     border-radius: 2px;
   }
 
-  /* Native modal <dialog> (mobile nav) leaves the page scrollable behind it */
+  /* Room the footer keeps clear at the bottom on mobile so the fixed
+     StickyContact bar (~68px plus the device safe area) never covers it */
+  :root {
+    --sticky-contact-space: calc(5rem + env(safe-area-inset-bottom));
+  }
+
+  /* Native modal <dialog> (mobile nav, filter sheet) leaves the page
+     scrollable behind it */
   body:has(dialog[open]) {
     overflow: hidden;
   }

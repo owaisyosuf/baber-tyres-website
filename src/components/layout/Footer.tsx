@@ -47,7 +47,7 @@ export async function Footer() {
   const footerBrands = brands.slice(0, FOOTER_BRAND_LIMIT);
 
   return (
-    <footer className="mt-16 border-t border-border bg-surface">
+    <footer className="mt-16 border-t border-border bg-surface pb-(--sticky-contact-space) md:pb-0">
       <Container className="py-12">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
