@@ -1,0 +1,100 @@
+import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { Suspense } from "react";
+import { CatalogView } from "@/components/catalog/CatalogView";
+import { WhatsAppIcon } from "@/components/icons";
+import { Button, Container } from "@/components/ui";
+import { CATALOG_PATH, catalogHref, parseCatalogSearchParams } from "@/lib/filters";
+import { getFilterOptions, getProducts } from "@/lib/sanity/queries";
+import { getShopSettings } from "@/lib/sanity/settings";
+import { buildWhatsAppLink, genericInquiryMessage, sizeWhatsAppLink } from "@/lib/whatsapp";
+
+type SearchParams = Promise<Record<string, string | string[] | undefined>>;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getShopSettings();
+  return {
+    title: "Tyres in Karachi",
+    description: `Car, SUV, truck, forklift and off-road tyres from the brands we import and deal in, at ${settings.addressLine}, ${settings.city}. Filter by brand, size or price, or message us on WhatsApp.`,
+    // Every filtered or paged view is the same catalog; only /tyres is indexed.
+    alternates: { canonical: CATALOG_PATH },
+  };
+}
+
+/** Shown when Sanity cannot be reached — the visitor can still reach the shop (NFR-11). */
+async function CatalogUnavailable() {
+  const settings = await getShopSettings();
+  return (
+    <div role="alert" className="rounded-lg border border-border bg-surface p-6 sm:p-10">
+      <h2 className="font-display text-h3">We could not load the tyre list just now</h2>
+      <p className="mt-3 max-w-[52ch] text-body text-muted">
+        Please message us on WhatsApp and we will help you directly with sizes, brands and prices.
+      </p>
+      <div className="mt-6">
+        <Button
+          href={buildWhatsAppLink(genericInquiryMessage(), settings.whatsappE164)}
+          variant="whatsapp"
+          icon={<WhatsAppIcon />}
+          aria-label="Chat with us on WhatsApp"
+        >
+          WhatsApp
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+async function Catalog({ searchParams }: { searchParams: SearchParams }) {
+  const { filters, page } = parseCatalogSearchParams(await searchParams);
+
+  let data;
+  try {
+    const [result, options, settings] = await Promise.all([
+      getProducts(filters, { page }),
+      getFilterOptions(),
+      getShopSettings(),
+    ]);
+    data = { result, options, settings };
+  } catch (error) {
+    console.error("Catalog unavailable:", error);
+    return <CatalogUnavailable />;
+  }
+
+  const { items, total, pageSize } = data.result;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  // A link to a page that no longer exists (products were removed) goes to the last real one.
+  if (page > totalPages) redirect(catalogHref(filters, totalPages));
+
+  return (
+    <CatalogView
+      filters={filters}
+      options={data.options}
+      products={items}
+      total={total}
+      page={page}
+      pageSize={pageSize}
+      whatsappHref={sizeWhatsAppLink(filters, data.settings.whatsappE164)}
+    />
+  );
+}
+
+export default function TyresPage({ searchParams }: { searchParams: SearchParams }) {
+  return (
+    <Container className="py-8 md:py-12">
+      <h1 className="text-h1">Tyres</h1>
+      <p className="mt-3 mb-8 max-w-[60ch] text-body-lg text-muted">
+        Car, SUV, truck, forklift and off-road tyres. Filter by brand, size or price — or message
+        us and we will find your size.
+      </p>
+      <Suspense
+        fallback={
+          <p role="status" className="text-muted">
+            Loading tyres…
+          </p>
+        }
+      >
+        <Catalog searchParams={searchParams} />
+      </Suspense>
+    </Container>
+  );
+}

@@ -38,6 +38,23 @@ export function genericInquiryMessage(): string {
   return `Hi ${siteConfig.shopName}, I have a question about your tyres.`;
 }
 
+/**
+ * For a visitor who searched for a size and found nothing: names the size they
+ * were after when the filter carries a full width/profile/rim, and falls back
+ * to the generic message otherwise.
+ */
+export function sizeInquiryMessage(size: {
+  width?: number;
+  profile?: number;
+  rim?: number;
+}): string {
+  const { width, profile, rim } = size;
+  if (width === undefined || profile === undefined || rim === undefined) {
+    return genericInquiryMessage();
+  }
+  return `Hi ${siteConfig.shopName}, I'm looking for ${formatTyreSize({ width, profile, rim })} tyres. Do you have them in stock?`;
+}
+
 export function productWhatsAppLink(product: {
   name: string;
   size: TyreSizeInput;
@@ -55,4 +72,11 @@ export function serviceWhatsAppLink(serviceName: string): string {
 
 export function genericWhatsAppLink(): string {
   return buildWhatsAppLink(genericInquiryMessage());
+}
+
+export function sizeWhatsAppLink(
+  size: { width?: number; profile?: number; rim?: number },
+  phoneE164?: string,
+): string {
+  return buildWhatsAppLink(sizeInquiryMessage(size), phoneE164);
 }

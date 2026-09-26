@@ -6,6 +6,8 @@ import {
   brandInquiryMessage,
   serviceInquiryMessage,
   genericInquiryMessage,
+  sizeInquiryMessage,
+  sizeWhatsAppLink,
 } from "./whatsapp";
 import { siteConfig } from "./site";
 
@@ -66,5 +68,28 @@ describe("productWhatsAppLink", () => {
     });
     expect(link).toContain(`https://wa.me/${expectedDigits}?text=`);
     expect(decodeURIComponent(link.split("text=")[1])).toContain("11R22.5");
+  });
+});
+
+describe("size inquiries", () => {
+  it("names the size when the filter has all three parts", () => {
+    const msg = sizeInquiryMessage({ width: 185, profile: 65, rim: 15 });
+    expect(msg).toContain("185/65 R15");
+    expect(msg).toContain(siteConfig.shopName);
+  });
+
+  it("supports a decimal rim", () => {
+    expect(sizeInquiryMessage({ width: 295, profile: 80, rim: 22.5 })).toContain("295/80 R22.5");
+  });
+
+  it("falls back to the generic message when the size is incomplete", () => {
+    expect(sizeInquiryMessage({})).toBe(genericInquiryMessage());
+    expect(sizeInquiryMessage({ width: 185, profile: 65 })).toBe(genericInquiryMessage());
+  });
+
+  it("builds a wa.me link carrying the encoded message", () => {
+    const link = sizeWhatsAppLink({ width: 185, profile: 65, rim: 15 });
+    expect(link.startsWith(`https://wa.me/${expectedDigits}?text=`)).toBe(true);
+    expect(decodeURIComponent(link.split("text=")[1])).toContain("185/65 R15");
   });
 });
