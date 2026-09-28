@@ -3,12 +3,14 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { WhatsAppIcon } from "@/components/icons";
 import { BrandBadge, ProductGrid } from "@/components/product";
+import { Unavailable } from "@/components/states/Unavailable";
 import { Breadcrumb, Button, Container } from "@/components/ui";
 import {
   brandPageDescription,
   brandPageTitle,
   brandRelationshipStatement,
 } from "@/lib/brand";
+import { rethrowDuringBuild } from "@/lib/build-phase";
 import { catalogHref } from "@/lib/filters";
 import { sanityImageUrl } from "@/lib/sanity/image";
 import { getBrandBySlug, getBrands } from "@/lib/sanity/queries";
@@ -19,15 +21,31 @@ const LOGO_WIDTH = 320;
 const LOGO_HEIGHT = 160;
 
 export async function generateStaticParams() {
-  const brands = await getBrands();
-  return brands.map((brand) => ({ slug: brand.slug }));
+  try {
+    const brands = await getBrands();
+    return brands.map((brand) => ({ slug: brand.slug }));
+  } catch (error) {
+    // Fails the build. At request time (only `next dev` calls this then) Cache Components
+    // rejects an empty list, so hand back one placeholder: the page then hits the same
+    // Sanity failure and shows the error boundary's contact actions instead of a blank 500.
+    rethrowDuringBuild(error);
+    console.error("Brand slugs unavailable:", error);
+    return [{ slug: "unavailable" }];
+  }
 }
 
 export async function generateMetadata({
   params,
 }: PageProps<"/brands/[slug]">): Promise<Metadata> {
   const { slug } = await params;
-  const brand = await getBrandBySlug(slug);
+  let brand;
+  try {
+    brand = await getBrandBySlug(slug);
+  } catch (error) {
+    rethrowDuringBuild(error);
+    console.error("Brand unavailable for metadata:", error);
+    return { title: "Brand" };
+  }
   if (!brand) notFound();
 
   const settings = await getShopSettings();
@@ -52,7 +70,14 @@ export async function generateMetadata({
 
 export default async function BrandPage({ params }: PageProps<"/brands/[slug]">) {
   const { slug } = await params;
-  const brand = await getBrandBySlug(slug);
+  let brand;
+  try {
+    brand = await getBrandBySlug(slug);
+  } catch (error) {
+    rethrowDuringBuild(error);
+    console.error("Brand unavailable:", error);
+    return <Unavailable what="this brand" />;
+  }
   if (!brand) notFound();
 
   const settings = await getShopSettings();

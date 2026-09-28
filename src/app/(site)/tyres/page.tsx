@@ -3,11 +3,13 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { CatalogView } from "@/components/catalog/CatalogView";
 import { WhatsAppIcon } from "@/components/icons";
+import { CatalogSkeleton } from "@/components/skeleton/Skeletons";
 import { Button, Container } from "@/components/ui";
 import { CATALOG_PATH, catalogHref, parseCatalogSearchParams } from "@/lib/filters";
 import { getFilterOptions, getProducts } from "@/lib/sanity/queries";
 import { getShopSettings } from "@/lib/sanity/settings";
 import { buildWhatsAppLink, genericInquiryMessage, sizeWhatsAppLink } from "@/lib/whatsapp";
+import { rethrowDuringBuild } from "@/lib/build-phase";
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
@@ -56,6 +58,7 @@ async function Catalog({ searchParams }: { searchParams: SearchParams }) {
     ]);
     data = { result, options, settings };
   } catch (error) {
+    rethrowDuringBuild(error);
     console.error("Catalog unavailable:", error);
     return <CatalogUnavailable />;
   }
@@ -86,13 +89,7 @@ export default function TyresPage({ searchParams }: { searchParams: SearchParams
         Car, SUV, truck, forklift and off-road tyres. Filter by brand, size or price — or message
         us and we will find your size.
       </p>
-      <Suspense
-        fallback={
-          <p role="status" className="text-muted">
-            Loading tyres…
-          </p>
-        }
-      >
+      <Suspense fallback={<CatalogSkeleton />}>
         <Catalog searchParams={searchParams} />
       </Suspense>
     </Container>

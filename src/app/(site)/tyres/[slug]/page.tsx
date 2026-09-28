@@ -10,6 +10,7 @@ import {
   StockBadge,
 } from "@/components/product";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { Unavailable } from "@/components/states/Unavailable";
 import { Breadcrumb, Button, Container } from "@/components/ui";
 import { CATALOG_PATH, catalogHref } from "@/lib/filters";
 import { formatPhoneDisplay, formatTyreSize } from "@/lib/format";
@@ -24,20 +25,37 @@ import { buildProductJsonLd } from "@/lib/seo/product";
 import { siteUrl } from "@/lib/site-url";
 import type { RELATED_PRODUCTS_QUERY_RESULT } from "@/sanity/types";
 import { buildWhatsAppLink, productInquiryMessage } from "@/lib/whatsapp";
+import { rethrowDuringBuild } from "@/lib/build-phase";
 
 const OG_IMAGE_WIDTH = 1200;
 const OG_IMAGE_HEIGHT = 900;
 
 export async function generateStaticParams() {
-  const products = await getProductSlugs();
-  return products.map((product) => ({ slug: product.slug }));
+  try {
+    const products = await getProductSlugs();
+    return products.map((product) => ({ slug: product.slug }));
+  } catch (error) {
+    // Fails the build. At request time (only `next dev` calls this then) Cache Components
+    // rejects an empty list, so hand back one placeholder: the page then hits the same
+    // Sanity failure and shows the error boundary's contact actions instead of a blank 500.
+    rethrowDuringBuild(error);
+    console.error("Product slugs unavailable:", error);
+    return [{ slug: "unavailable" }];
+  }
 }
 
 export async function generateMetadata({
   params,
 }: PageProps<"/tyres/[slug]">): Promise<Metadata> {
   const { slug } = await params;
-  const product = await getProductBySlug(slug);
+  let product;
+  try {
+    product = await getProductBySlug(slug);
+  } catch (error) {
+    rethrowDuringBuild(error);
+    console.error("Tyre unavailable for metadata:", error);
+    return { title: "Tyre details" };
+  }
   if (!product) notFound();
 
   const size = formatTyreSize(product);
@@ -67,7 +85,14 @@ export default async function ProductPage({
   params,
 }: PageProps<"/tyres/[slug]">) {
   const { slug } = await params;
-  const product = await getProductBySlug(slug);
+  let product;
+  try {
+    product = await getProductBySlug(slug);
+  } catch (error) {
+    rethrowDuringBuild(error);
+    console.error("Tyre unavailable:", error);
+    return <Unavailable what="this tyre" />;
+  }
   if (!product) notFound();
 
   const inStock = product.inStock !== false;
@@ -85,6 +110,7 @@ export default async function ProductPage({
       categoryId: product.category._id,
     });
   } catch (error) {
+    rethrowDuringBuild(error);
     console.error("Related products unavailable:", error);
   }
 

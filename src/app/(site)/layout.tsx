@@ -1,26 +1,12 @@
 import type { Metadata } from "next";
-import { Sora, Inter } from "next/font/google";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { StickyContact } from "@/components/layout/StickyContact";
 import { LocalBusinessJsonLd } from "@/components/seo/LocalBusinessJsonLd";
+import { inter, sora } from "@/lib/fonts";
 import { getShopSettings } from "@/lib/sanity/settings";
 import { siteUrl } from "@/lib/site-url";
 import "./globals.css";
-
-const sora = Sora({
-  variable: "--font-sora",
-  subsets: ["latin"],
-  weight: ["600", "700", "800"],
-  display: "swap",
-});
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  display: "swap",
-});
 
 // Site-wide defaults (FR-G1). Pages override the title and description; the
 // template turns a page title into "<title> | Shop name".

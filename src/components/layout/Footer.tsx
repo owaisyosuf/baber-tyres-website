@@ -7,6 +7,7 @@ import { getBrands, getCategories } from "@/lib/sanity/queries";
 import { getShopSettings } from "@/lib/sanity/settings";
 import { siteConfig } from "@/lib/site";
 import { buildWhatsAppLink, genericInquiryMessage } from "@/lib/whatsapp";
+import { rethrowDuringBuild } from "@/lib/build-phase";
 
 /** The footer lists a handful of brands; the full set lives on /brands. */
 const FOOTER_BRAND_LIMIT = 8;
@@ -21,6 +22,7 @@ async function orEmpty<T>(request: Promise<T[]>): Promise<T[]> {
   try {
     return await request;
   } catch (error) {
+    rethrowDuringBuild(error);
     console.error("Footer list unavailable:", error);
     return [];
   }

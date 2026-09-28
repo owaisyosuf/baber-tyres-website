@@ -5,6 +5,7 @@ import { Section } from "@/components/ui";
 import { RELATIONSHIP_GROUPS } from "@/lib/brand";
 import { getBrands } from "@/lib/sanity/queries";
 import { siteConfig } from "@/lib/site";
+import { rethrowDuringBuild } from "@/lib/build-phase";
 
 /**
  * Brand showcase — FR-A3. Grouped by how the shop carries each brand, importers
@@ -18,6 +19,7 @@ export async function BrandStrip() {
   try {
     brands = await getBrands();
   } catch (error) {
+    rethrowDuringBuild(error);
     console.error("Brands unavailable on the homepage:", error);
     return null;
   }

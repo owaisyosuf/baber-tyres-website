@@ -3,6 +3,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { ServiceIcon } from "@/components/service/ServiceIcon";
 import { Card, Section } from "@/components/ui";
 import { getServices } from "@/lib/sanity/queries";
+import { rethrowDuringBuild } from "@/lib/build-phase";
 
 /**
  * Services summary — FR-A5. The services as Sanity lists them, each linking to
@@ -14,6 +15,7 @@ export async function ServicesSummary() {
   try {
     services = await getServices();
   } catch (error) {
+    rethrowDuringBuild(error);
     console.error("Services unavailable on the homepage:", error);
     return null;
   }

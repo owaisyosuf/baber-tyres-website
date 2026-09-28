@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { CategoryIcon } from "@/components/category/CategoryIcon";
 import { WhatsAppIcon } from "@/components/icons";
 import { ProductGrid } from "@/components/product";
+import { Unavailable } from "@/components/states/Unavailable";
 import { Breadcrumb, Button, Container } from "@/components/ui";
 import {
   categoryHeading,
@@ -10,21 +11,38 @@ import {
   categoryPageDescription,
   categoryPageTitle,
 } from "@/lib/category";
+import { rethrowDuringBuild } from "@/lib/build-phase";
 import { CATALOG_PATH, catalogHref } from "@/lib/filters";
 import { getCategories, getCategoryBySlug } from "@/lib/sanity/queries";
 import { getShopSettings } from "@/lib/sanity/settings";
 import { buildWhatsAppLink, categoryInquiryMessage } from "@/lib/whatsapp";
 
 export async function generateStaticParams() {
-  const categories = await getCategories();
-  return categories.map((category) => ({ slug: category.slug }));
+  try {
+    const categories = await getCategories();
+    return categories.map((category) => ({ slug: category.slug }));
+  } catch (error) {
+    // Fails the build. At request time (only `next dev` calls this then) Cache Components
+    // rejects an empty list, so hand back one placeholder: the page then hits the same
+    // Sanity failure and shows the error boundary's contact actions instead of a blank 500.
+    rethrowDuringBuild(error);
+    console.error("Category slugs unavailable:", error);
+    return [{ slug: "unavailable" }];
+  }
 }
 
 export async function generateMetadata({
   params,
 }: PageProps<"/categories/[slug]">): Promise<Metadata> {
   const { slug } = await params;
-  const category = await getCategoryBySlug(slug);
+  let category;
+  try {
+    category = await getCategoryBySlug(slug);
+  } catch (error) {
+    rethrowDuringBuild(error);
+    console.error("Category unavailable for metadata:", error);
+    return { title: "Category" };
+  }
   if (!category) notFound();
 
   const settings = await getShopSettings();
@@ -44,7 +62,14 @@ export async function generateMetadata({
 
 export default async function CategoryPage({ params }: PageProps<"/categories/[slug]">) {
   const { slug } = await params;
-  const category = await getCategoryBySlug(slug);
+  let category;
+  try {
+    category = await getCategoryBySlug(slug);
+  } catch (error) {
+    rethrowDuringBuild(error);
+    console.error("Category unavailable:", error);
+    return <Unavailable what="this category" />;
+  }
   if (!category) notFound();
 
   const settings = await getShopSettings();

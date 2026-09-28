@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { WhatsAppIcon } from "@/components/icons";
 import { ServiceIcon } from "@/components/service/ServiceIcon";
+import { ServiceListSkeleton } from "@/components/skeleton/Skeletons";
 import { ShopVisitDetails } from "@/components/shop/ShopVisitDetails";
 import { Button, Container } from "@/components/ui";
 import { getServices } from "@/lib/sanity/queries";
@@ -12,6 +13,7 @@ import {
   genericInquiryMessage,
   serviceInquiryMessage,
 } from "@/lib/whatsapp";
+import { rethrowDuringBuild } from "@/lib/build-phase";
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getShopSettings();
@@ -19,6 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
   try {
     names = (await getServices()).map((service) => service.name);
   } catch (error) {
+    rethrowDuringBuild(error);
     console.error("Services unavailable for metadata:", error);
   }
   const offered = names.length > 0 ? `${names.join(", ")} at ` : "Tyre services at ";
@@ -57,6 +60,7 @@ async function Services() {
   try {
     services = await getServices();
   } catch (error) {
+    rethrowDuringBuild(error);
     console.error("Services unavailable:", error);
     return <ServicesUnavailable />;
   }
@@ -149,13 +153,7 @@ export default function ServicesPage() {
         Fitting, computerized alignment and computerized balancing at our shop. Message us on
         WhatsApp to check timing or ask a question.
       </p>
-      <Suspense
-        fallback={
-          <p role="status" className="text-muted">
-            Loading services…
-          </p>
-        }
-      >
+      <Suspense fallback={<ServiceListSkeleton />}>
         <Services />
         <DeliveryAndLocation />
       </Suspense>

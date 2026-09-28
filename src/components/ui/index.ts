@@ -8,3 +8,4 @@ export { Card } from "./Card";
 export { Container } from "./Container";
 export { Section } from "./Section";
 export { Heading } from "./Heading";
+export { Skeleton } from "./Skeleton";

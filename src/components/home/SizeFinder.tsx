@@ -1,6 +1,7 @@
 import { Container, Section } from "@/components/ui";
 import { getFilterOptions } from "@/lib/sanity/queries";
 import { SizeFinderForm } from "./SizeFinderForm";
+import { rethrowDuringBuild } from "@/lib/build-phase";
 
 /**
  * Homepage size finder — FR-A2. The options are the sizes that exist among
@@ -13,6 +14,7 @@ export async function SizeFinder() {
   try {
     options = await getFilterOptions();
   } catch (error) {
+    rethrowDuringBuild(error);
     console.error("Filter options unavailable for the size finder:", error);
     return null;
   }

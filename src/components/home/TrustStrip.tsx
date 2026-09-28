@@ -3,6 +3,7 @@ import { getBrands } from "@/lib/sanity/queries";
 import { getShopSettings } from "@/lib/sanity/settings";
 import { siteConfig } from "@/lib/site";
 import { trustStripItems } from "@/lib/trust";
+import { rethrowDuringBuild } from "@/lib/build-phase";
 
 /**
  * Numeric trust strip — FR-A2. Sits under the hero as three plain facts. If
@@ -16,6 +17,7 @@ export async function TrustStrip() {
     const brands = await getBrands();
     importerCount = brands.filter((brand) => brand.relationship === "importer").length;
   } catch (error) {
+    rethrowDuringBuild(error);
     console.error("Brands unavailable for the trust strip:", error);
   }
 

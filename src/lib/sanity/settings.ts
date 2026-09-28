@@ -1,5 +1,6 @@
 import { resolveSettings, type ShopSettings } from "../settings";
 import { getSettings } from "./queries";
+import { rethrowDuringBuild } from "../build-phase";
 
 /**
  * The shop settings for rendering. A Sanity failure falls back to the
@@ -10,6 +11,7 @@ export async function getShopSettings(): Promise<ShopSettings> {
   try {
     return resolveSettings(await getSettings());
   } catch (error) {
+    rethrowDuringBuild(error);
     console.error("Falling back to default shop settings:", error);
     return resolveSettings(null);
   }

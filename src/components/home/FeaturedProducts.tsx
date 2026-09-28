@@ -3,6 +3,7 @@ import { ProductGrid } from "@/components/product";
 import { Section } from "@/components/ui";
 import { CATALOG_PATH } from "@/lib/filters";
 import { getHomepageData } from "@/lib/sanity/queries";
+import { rethrowDuringBuild } from "@/lib/build-phase";
 
 /**
  * Featured products row — FR-A4, driven by the `featured` flag in Studio. With
@@ -14,6 +15,7 @@ export async function FeaturedProducts() {
   try {
     products = (await getHomepageData()).featuredProducts;
   } catch (error) {
+    rethrowDuringBuild(error);
     console.error("Featured products unavailable on the homepage:", error);
     return null;
   }

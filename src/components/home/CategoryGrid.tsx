@@ -3,6 +3,7 @@ import { CategoryIcon } from "@/components/category/CategoryIcon";
 import { Reveal } from "@/components/motion/Reveal";
 import { Card, Section } from "@/components/ui";
 import { getCategories } from "@/lib/sanity/queries";
+import { rethrowDuringBuild } from "@/lib/build-phase";
 
 /**
  * Vehicle category entry points — FR-A4. Every category is the same card at
@@ -15,6 +16,7 @@ export async function CategoryGrid() {
   try {
     categories = await getCategories();
   } catch (error) {
+    rethrowDuringBuild(error);
     console.error("Categories unavailable on the homepage:", error);
     return null;
   }

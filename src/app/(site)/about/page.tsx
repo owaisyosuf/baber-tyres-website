@@ -7,6 +7,7 @@ import { RELATIONSHIP_GROUPS } from "@/lib/brand";
 import { getBrands, getServices } from "@/lib/sanity/queries";
 import { getShopSettings } from "@/lib/sanity/settings";
 import { buildWhatsAppLink, genericInquiryMessage } from "@/lib/whatsapp";
+import { rethrowDuringBuild } from "@/lib/build-phase";
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getShopSettings();
@@ -24,6 +25,7 @@ async function BrandGroups() {
   try {
     brands = await getBrands();
   } catch (error) {
+    rethrowDuringBuild(error);
     console.error("Brands unavailable on About:", error);
     return null;
   }
@@ -60,6 +62,7 @@ async function ServiceList() {
   try {
     services = await getServices();
   } catch (error) {
+    rethrowDuringBuild(error);
     console.error("Services unavailable on About:", error);
     return null;
   }

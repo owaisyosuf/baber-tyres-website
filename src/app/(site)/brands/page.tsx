@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { BrandCard } from "@/components/brand";
 import { WhatsAppIcon } from "@/components/icons";
+import { BrandGridSkeleton } from "@/components/skeleton/Skeletons";
 import { Button, Container } from "@/components/ui";
 import { RELATIONSHIP_GROUPS } from "@/lib/brand";
 import { getBrands } from "@/lib/sanity/queries";
 import { getShopSettings } from "@/lib/sanity/settings";
 import { buildWhatsAppLink, genericInquiryMessage } from "@/lib/whatsapp";
+import { rethrowDuringBuild } from "@/lib/build-phase";
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getShopSettings();
@@ -45,6 +47,7 @@ async function Brands() {
   try {
     brands = await getBrands();
   } catch (error) {
+    rethrowDuringBuild(error);
     console.error("Brands unavailable:", error);
     return <BrandsUnavailable />;
   }
@@ -82,13 +85,7 @@ export default function BrandsPage() {
         Some of these we import ourselves, some we deal in, and some we simply stock. Each page
         says which.
       </p>
-      <Suspense
-        fallback={
-          <p role="status" className="text-muted">
-            Loading brands…
-          </p>
-        }
-      >
+      <Suspense fallback={<BrandGridSkeleton />}>
         <Brands />
       </Suspense>
     </Container>
