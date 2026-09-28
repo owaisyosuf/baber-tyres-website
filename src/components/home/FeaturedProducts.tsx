@@ -30,7 +30,7 @@ export async function FeaturedProducts() {
         </Link>
       </div>
       <div aria-labelledby="home-featured" role="region">
-        <ProductGrid products={products} headingLevel="h3" />
+        <ProductGrid products={products} headingLevel="h3" reveal />
       </div>
     </Section>
   );

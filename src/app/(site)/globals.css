@@ -146,10 +146,31 @@
   }
 }
 
+/* Scroll reveal (design.md §7.6): fade + 16px rise, 400ms, once. <Reveal> only
+   sets data-reveal on elements that start below the fold, so content is fully
+   visible without JavaScript and above the fold never animates. */
+[data-reveal="hidden"] {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+[data-reveal="shown"] {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 400ms var(--ease-out-soft) var(--reveal-delay, 0ms),
+    transform 400ms var(--ease-out-soft) var(--reveal-delay, 0ms);
+}
+
 /* Constitution §IV / NFR-4 — all non-essential motion is disabled */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
   }
 
   *,

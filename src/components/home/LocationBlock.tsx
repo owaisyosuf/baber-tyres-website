@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { WhatsAppIcon } from "@/components/icons";
+import { Reveal } from "@/components/motion/Reveal";
 import { ShopMap } from "@/components/shop/ShopMap";
 import { ShopVisitDetails } from "@/components/shop/ShopVisitDetails";
 import { Button, Section } from "@/components/ui";
@@ -20,7 +21,7 @@ export async function LocationBlock() {
         Visit us
       </h2>
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
-        <div className="flex flex-col gap-6 rounded-lg border border-border bg-background p-6 sm:p-10">
+        <Reveal className="flex flex-col gap-6 rounded-lg border border-border bg-background p-6 sm:p-10">
           <ShopVisitDetails settings={settings} />
           <div className="border-t border-border pt-6">
             <h3 className="font-display text-h3">Delivery</h3>
@@ -36,15 +37,15 @@ export async function LocationBlock() {
               </Button>
             </div>
           </div>
-        </div>
-        <div className="flex flex-col justify-between gap-6">
+        </Reveal>
+        <Reveal index={1} className="flex flex-col justify-between gap-6">
           <ShopMap settings={settings} />
           <p className="text-body">
             <Link href="/contact" className="text-accent underline underline-offset-4">
               Contact details
             </Link>
           </p>
-        </div>
+        </Reveal>
       </div>
     </Section>
   );

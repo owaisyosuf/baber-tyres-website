@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CategoryIcon } from "@/components/category/CategoryIcon";
+import { Reveal } from "@/components/motion/Reveal";
 import { Card, Section } from "@/components/ui";
 import { getCategories } from "@/lib/sanity/queries";
 
@@ -32,26 +33,28 @@ export async function CategoryGrid() {
         aria-labelledby="home-categories"
         className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5"
       >
-        {categories.map((category) => (
+        {categories.map((category, index) => (
           <li key={category._id}>
-            <Card
-              as="div"
-              interactive
-              className="relative flex h-full flex-col items-center gap-3 p-6 text-center"
-            >
-              <span
-                aria-hidden
-                className="flex h-14 w-14 items-center justify-center rounded-lg border border-border bg-background text-accent"
+            <Reveal index={index} className="h-full">
+              <Card
+                as="div"
+                interactive
+                className="relative flex h-full flex-col items-center gap-3 p-6 text-center"
               >
-                <CategoryIcon icon={category.icon} className="h-8 w-8" />
-              </span>
-              <Link
-                href={`/categories/${category.slug}`}
-                className="text-body font-semibold text-text outline-none after:absolute after:inset-0 after:rounded-lg focus-visible:after:outline-2 focus-visible:after:-outline-offset-2 focus-visible:after:outline-accent"
-              >
-                {category.name}
-              </Link>
-            </Card>
+                <span
+                  aria-hidden
+                  className="flex h-14 w-14 items-center justify-center rounded-lg border border-border bg-background text-accent"
+                >
+                  <CategoryIcon icon={category.icon} className="h-8 w-8" />
+                </span>
+                <Link
+                  href={`/categories/${category.slug}`}
+                  className="text-body font-semibold text-text outline-none after:absolute after:inset-0 after:rounded-lg focus-visible:after:outline-2 focus-visible:after:-outline-offset-2 focus-visible:after:outline-accent"
+                >
+                  {category.name}
+                </Link>
+              </Card>
+            </Reveal>
           </li>
         ))}
       </ul>

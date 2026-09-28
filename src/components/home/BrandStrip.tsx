@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BrandCard } from "@/components/brand";
+import { Reveal } from "@/components/motion/Reveal";
 import { Section } from "@/components/ui";
 import { RELATIONSHIP_GROUPS } from "@/lib/brand";
 import { getBrands } from "@/lib/sanity/queries";
@@ -38,9 +39,11 @@ export async function BrandStrip() {
             <div key={group.relationship}>
               <h3 className="mb-4 text-label uppercase text-accent">{group.heading}</h3>
               <ul role="list" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {inGroup.map((brand) => (
+                {inGroup.map((brand, index) => (
                   <li key={brand._id}>
-                    <BrandCard brand={brand} />
+                    <Reveal index={index} className="h-full">
+                      <BrandCard brand={brand} />
+                    </Reveal>
                   </li>
                 ))}
               </ul>

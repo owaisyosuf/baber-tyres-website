@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Reveal } from "@/components/motion/Reveal";
 import { ServiceIcon } from "@/components/service/ServiceIcon";
 import { Card, Section } from "@/components/ui";
 import { getServices } from "@/lib/sanity/queries";
@@ -27,31 +28,33 @@ export async function ServicesSummary() {
         Once your tyres are chosen, we can fit them for you.
       </p>
       <ul role="list" className="grid gap-4 md:grid-cols-3">
-        {services.map((service) => (
+        {services.map((service, index) => (
           <li key={service._id}>
-            <Card
-              as="div"
-              interactive
-              className="relative flex h-full flex-col gap-3 p-6"
-            >
-              <span
-                aria-hidden
-                className="flex h-14 w-14 items-center justify-center rounded-lg border border-border bg-background text-accent"
+            <Reveal index={index} className="h-full">
+              <Card
+                as="div"
+                interactive
+                className="relative flex h-full flex-col gap-3 p-6"
               >
-                <ServiceIcon icon={service.icon} className="h-8 w-8" />
-              </span>
-              <h3 className="text-body font-semibold text-text">
-                <Link
-                  href={`/services#${service.slug}`}
-                  className="outline-none after:absolute after:inset-0 after:rounded-lg focus-visible:after:outline-2 focus-visible:after:-outline-offset-2 focus-visible:after:outline-accent"
+                <span
+                  aria-hidden
+                  className="flex h-14 w-14 items-center justify-center rounded-lg border border-border bg-background text-accent"
                 >
-                  {service.name}
-                </Link>
-              </h3>
-              {service.description && (
-                <p className="line-clamp-3 text-small text-muted">{service.description}</p>
-              )}
-            </Card>
+                  <ServiceIcon icon={service.icon} className="h-8 w-8" />
+                </span>
+                <h3 className="text-body font-semibold text-text">
+                  <Link
+                    href={`/services#${service.slug}`}
+                    className="outline-none after:absolute after:inset-0 after:rounded-lg focus-visible:after:outline-2 focus-visible:after:-outline-offset-2 focus-visible:after:outline-accent"
+                  >
+                    {service.name}
+                  </Link>
+                </h3>
+                {service.description && (
+                  <p className="line-clamp-3 text-small text-muted">{service.description}</p>
+                )}
+              </Card>
+            </Reveal>
           </li>
         ))}
       </ul>
