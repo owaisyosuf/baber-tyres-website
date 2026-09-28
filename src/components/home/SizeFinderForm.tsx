@@ -9,7 +9,7 @@ export interface SizeFinderOptions {
 }
 
 const selectClassName =
-  "min-h-11 w-full rounded-md border border-border-strong bg-background px-3 text-body text-text";
+  "min-h-11 w-full rounded-md border border-muted bg-background px-3 text-body text-text";
 const labelClassName = "mb-1 block text-small text-muted";
 
 /**

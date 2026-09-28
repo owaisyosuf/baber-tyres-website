@@ -6,7 +6,8 @@ import { buildWhatsAppLink, genericInquiryMessage } from "@/lib/whatsapp";
 
 /**
  * Mobile-only contact bar — FR-D1, Constitution §VI: WhatsApp and Call are
- * one tap away from every page. The Footer reserves `--sticky-contact-space`
+ * one tap away from every page. An <aside> so it is a landmark rather than
+ * loose content outside every region. The Footer reserves `--sticky-contact-space`
  * (globals.css) beneath its content so this bar never sits over the footer's
  * own actions. The bar hides itself while any modal <dialog> — the mobile
  * menu, and later the filter sheet — is open, using a Tailwind variant
@@ -18,8 +19,7 @@ export async function StickyContact() {
   const phoneDisplay = formatPhoneDisplay(settings.phoneE164);
 
   return (
-    <div
-      role="group"
+    <aside
       aria-label="Quick contact"
       className="fixed inset-x-0 bottom-0 z-30 flex gap-2 border-t border-border bg-background/95 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur md:hidden [body:has(dialog[open])_&]:hidden"
     >
@@ -41,6 +41,6 @@ export async function StickyContact() {
       >
         Call
       </Button>
-    </div>
+    </aside>
   );
 }

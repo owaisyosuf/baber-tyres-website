@@ -65,8 +65,10 @@ export async function generateMetadata({
   const description =
     product.seo?.description ||
     `${product.name} (${size}) from ${product.brand.name}, ${product.category.name.toLowerCase()} tyres at Baber Tyres Corporation, Karachi. Message us on WhatsApp for price and availability.`;
-  const ogImage = product.images[0]
-    ? sanityImageUrl(product.images[0], OG_IMAGE_WIDTH, OG_IMAGE_HEIGHT)
+  // A product with no photo yet (NFR-12) has `images: null`, whatever the schema requires.
+  const firstImage = product.images?.[0];
+  const ogImage = firstImage
+    ? sanityImageUrl(firstImage, OG_IMAGE_WIDTH, OG_IMAGE_HEIGHT)
     : null;
   const canonical = `/tyres/${product.slug}`;
 
@@ -117,7 +119,8 @@ export default async function ProductPage({
     console.error("Related products unavailable:", error);
   }
 
-  const imageUrls = product.images
+  const images = product.images ?? [];
+  const imageUrls = images
     .map((image) => sanityImageUrl(image, OG_IMAGE_WIDTH, OG_IMAGE_HEIGHT))
     .filter((url): url is string => url !== null);
 
@@ -135,7 +138,7 @@ export default async function ProductPage({
       />
 
       <div className="mt-6 grid gap-8 lg:grid-cols-2 lg:gap-12">
-        <ProductGallery images={product.images} productName={product.name} />
+        <ProductGallery images={images} productName={product.name} />
 
         <div className="flex flex-col gap-4">
           <div className="flex items-center justify-between gap-2">

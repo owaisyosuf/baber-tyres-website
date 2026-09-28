@@ -21,7 +21,7 @@ interface FilterFieldsProps {
 const legendClassName = "mb-2 text-label uppercase text-muted";
 const optionClassName = "flex min-h-11 cursor-pointer items-center gap-3 text-body text-text";
 const inputClassName =
-  "min-h-11 w-full rounded-md border border-border-strong bg-background px-3 text-body text-text placeholder:text-muted";
+  "min-h-11 w-full rounded-md border border-muted bg-background px-3 text-body text-text placeholder:text-muted";
 
 /**
  * The filter controls — brand, vehicle type, size, and price (FR-B2). They are
