@@ -9,7 +9,14 @@ import type { ShopSettings } from "@/lib/settings";
  * settings so no contact detail is typed into a page (R6). Shared by the
  * services, about, and (later) contact pages.
  */
-export function ShopVisitDetails({ settings }: { settings: ShopSettings }) {
+export function ShopVisitDetails({
+  settings,
+  showCall = true,
+}: {
+  settings: ShopSettings;
+  /** Hide the call button on a page that already has its own call action. */
+  showCall?: boolean;
+}) {
   const hours = formatOpeningHours(settings.hours);
   const phoneDisplay = formatPhoneDisplay(settings.phoneE164);
 
@@ -34,16 +41,18 @@ export function ShopVisitDetails({ settings }: { settings: ShopSettings }) {
           )}
         </dl>
       </div>
-      <div className="mt-2">
-        <Button
-          href={`tel:${settings.phoneE164}`}
-          variant="secondary"
-          icon={<PhoneIcon />}
-          aria-label={`Call us on ${phoneDisplay}`}
-        >
-          Call {phoneDisplay}
-        </Button>
-      </div>
+      {showCall && (
+        <div className="mt-2">
+          <Button
+            href={`tel:${settings.phoneE164}`}
+            variant="secondary"
+            icon={<PhoneIcon />}
+            aria-label={`Call us on ${phoneDisplay}`}
+          >
+            Call {phoneDisplay}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
