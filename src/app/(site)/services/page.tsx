@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { ClockIcon, LocationIcon, PhoneIcon, WhatsAppIcon } from "@/components/icons";
+import { WhatsAppIcon } from "@/components/icons";
 import { ServiceIcon } from "@/components/service/ServiceIcon";
+import { ShopVisitDetails } from "@/components/shop/ShopVisitDetails";
 import { Button, Container } from "@/components/ui";
-import { formatOpeningHours } from "@/lib/hours";
-import { formatPhoneDisplay } from "@/lib/format";
 import { getServices } from "@/lib/sanity/queries";
 import { getShopSettings } from "@/lib/sanity/settings";
 import {
@@ -106,8 +105,6 @@ async function Services() {
 
 async function DeliveryAndLocation() {
   const settings = await getShopSettings();
-  const hours = formatOpeningHours(settings.hours);
-  const phoneDisplay = formatPhoneDisplay(settings.phoneE164);
 
   return (
     <div className="mt-12 grid gap-6 lg:grid-cols-2">
@@ -138,35 +135,7 @@ async function DeliveryAndLocation() {
         <h2 id="visit" className="text-h3 font-display">
           Visit us
         </h2>
-        <address className="flex gap-3 not-italic text-body text-text">
-          <LocationIcon className="mt-1 shrink-0 text-accent" size={20} />
-          <span>
-            {settings.addressLine}, {settings.city}
-          </span>
-        </address>
-        <div className="flex gap-3">
-          <ClockIcon className="mt-1 shrink-0 text-accent" size={20} />
-          <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-body">
-            <dt className="text-text">{hours.days}</dt>
-            <dd className="tabular text-muted">{hours.time}</dd>
-            {hours.closedDay && (
-              <>
-                <dt className="text-text">{hours.closedDay}</dt>
-                <dd className="text-muted">Closed</dd>
-              </>
-            )}
-          </dl>
-        </div>
-        <div className="mt-2">
-          <Button
-            href={`tel:${settings.phoneE164}`}
-            variant="secondary"
-            icon={<PhoneIcon />}
-            aria-label={`Call us on ${phoneDisplay}`}
-          >
-            Call {phoneDisplay}
-          </Button>
-        </div>
+        <ShopVisitDetails settings={settings} />
       </section>
     </div>
   );
