@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { WhatsAppIcon } from "@/components/icons";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { BrandBadge, ProductGrid } from "@/components/product";
 import { Unavailable } from "@/components/states/Unavailable";
 import { Breadcrumb, Button, Container } from "@/components/ui";
@@ -15,6 +16,9 @@ import { catalogHref } from "@/lib/filters";
 import { sanityImageUrl } from "@/lib/sanity/image";
 import { getBrandBySlug, getBrands } from "@/lib/sanity/queries";
 import { getShopSettings } from "@/lib/sanity/settings";
+import { buildBreadcrumbJsonLd } from "@/lib/seo/breadcrumb";
+import { socialMetadata } from "@/lib/seo/metadata";
+import { siteUrl } from "@/lib/site-url";
 import { brandInquiryMessage, buildWhatsAppLink } from "@/lib/whatsapp";
 
 const LOGO_WIDTH = 320;
@@ -59,12 +63,13 @@ export async function generateMetadata({
     title,
     description,
     alternates: { canonical },
-    openGraph: {
+    ...socialMetadata({
       title,
       description,
-      url: canonical,
-      images: logoUrl ? [logoUrl] : undefined,
-    },
+      path: canonical,
+      siteName: settings.shopName,
+      image: logoUrl,
+    }),
   };
 }
 
@@ -87,6 +92,15 @@ export default async function BrandPage({ params }: PageProps<"/brands/[slug]">)
   return (
     <Container className="py-8 md:py-12">
       <Breadcrumb items={[{ label: "Brands", href: "/brands" }, { label: brand.name }]} />
+      <JsonLd
+        data={buildBreadcrumbJsonLd(
+          [
+            { name: "Brands", path: "/brands" },
+            { name: brand.name, path: `/brands/${brand.slug}` },
+          ],
+          siteUrl,
+        )}
+      />
 
       <header className="mt-6 flex flex-col gap-6 md:flex-row md:items-center md:gap-10">
         <div className="flex h-32 w-full items-center justify-center overflow-hidden rounded-lg border border-border bg-surface md:w-64 md:shrink-0">

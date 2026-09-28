@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CategoryIcon } from "@/components/category/CategoryIcon";
 import { WhatsAppIcon } from "@/components/icons";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { ProductGrid } from "@/components/product";
 import { Unavailable } from "@/components/states/Unavailable";
 import { Breadcrumb, Button, Container } from "@/components/ui";
@@ -15,6 +16,9 @@ import { rethrowDuringBuild } from "@/lib/build-phase";
 import { CATALOG_PATH, catalogHref } from "@/lib/filters";
 import { getCategories, getCategoryBySlug } from "@/lib/sanity/queries";
 import { getShopSettings } from "@/lib/sanity/settings";
+import { buildBreadcrumbJsonLd } from "@/lib/seo/breadcrumb";
+import { socialMetadata } from "@/lib/seo/metadata";
+import { siteUrl } from "@/lib/site-url";
 import { buildWhatsAppLink, categoryInquiryMessage } from "@/lib/whatsapp";
 
 export async function generateStaticParams() {
@@ -56,7 +60,7 @@ export async function generateMetadata({
     title,
     description,
     alternates: { canonical },
-    openGraph: { title, description, url: canonical },
+    ...socialMetadata({ title, description, path: canonical, siteName: settings.shopName }),
   };
 }
 
@@ -80,6 +84,15 @@ export default async function CategoryPage({ params }: PageProps<"/categories/[s
     <Container className="py-8 md:py-12">
       <Breadcrumb
         items={[{ label: "Tyres", href: CATALOG_PATH }, { label: category.name }]}
+      />
+      <JsonLd
+        data={buildBreadcrumbJsonLd(
+          [
+            { name: "Tyres", path: CATALOG_PATH },
+            { name: category.name, path: `/categories/${category.slug}` },
+          ],
+          siteUrl,
+        )}
       />
 
       <header className="mt-6 flex flex-col gap-4">

@@ -21,6 +21,8 @@ import {
   getRelatedProducts,
 } from "@/lib/sanity/queries";
 import { getShopSettings } from "@/lib/sanity/settings";
+import { socialMetadata } from "@/lib/seo/metadata";
+import { buildBreadcrumbJsonLd } from "@/lib/seo/breadcrumb";
 import { buildProductJsonLd } from "@/lib/seo/product";
 import { siteUrl } from "@/lib/site-url";
 import type { RELATED_PRODUCTS_QUERY_RESULT } from "@/sanity/types";
@@ -72,12 +74,13 @@ export async function generateMetadata({
     title,
     description,
     alternates: { canonical },
-    openGraph: {
+    ...socialMetadata({
       title,
       description,
-      url: canonical,
-      images: ogImage ? [ogImage] : undefined,
-    },
+      path: canonical,
+      siteName: (await getShopSettings()).shopName,
+      image: ogImage,
+    }),
   };
 }
 
@@ -199,6 +202,19 @@ export default async function ProductPage({
         </div>
       )}
 
+      <JsonLd
+        data={buildBreadcrumbJsonLd(
+          [
+            { name: "Tyres", path: CATALOG_PATH },
+            {
+              name: product.category.name,
+              path: catalogHref({ categorySlug: product.category.slug }),
+            },
+            { name: product.name, path: `/tyres/${product.slug}` },
+          ],
+          siteUrl,
+        )}
+      />
       <JsonLd
         data={buildProductJsonLd(
           {

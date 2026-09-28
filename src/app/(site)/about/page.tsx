@@ -6,16 +6,20 @@ import { Button, Container } from "@/components/ui";
 import { RELATIONSHIP_GROUPS } from "@/lib/brand";
 import { getBrands, getServices } from "@/lib/sanity/queries";
 import { getShopSettings } from "@/lib/sanity/settings";
+import { socialMetadata } from "@/lib/seo/metadata";
 import { buildWhatsAppLink, genericInquiryMessage } from "@/lib/whatsapp";
 import { rethrowDuringBuild } from "@/lib/build-phase";
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getShopSettings();
+  // The layout's title template appends the shop name.
+  const title = `About us — tyre importer and dealer in ${settings.city}`;
+  const description = `${settings.shopName} is a tyre importer and dealer on ${settings.addressLine}, ${settings.city}. See the brands we import, the brands we deal in, and how to reach us.`;
   return {
-    // The layout's title template appends the shop name.
-    title: `About us — tyre importer and dealer in ${settings.city}`,
-    description: `${settings.shopName} is a tyre importer and dealer on ${settings.addressLine}, ${settings.city}. See the brands we import, the brands we deal in, and how to reach us.`,
+    title,
+    description,
     alternates: { canonical: "/about" },
+    ...socialMetadata({ title, description, path: "/about", siteName: settings.shopName }),
   };
 }
 

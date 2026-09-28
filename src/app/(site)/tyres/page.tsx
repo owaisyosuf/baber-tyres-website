@@ -3,11 +3,15 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { CatalogView } from "@/components/catalog/CatalogView";
 import { WhatsAppIcon } from "@/components/icons";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { CatalogSkeleton } from "@/components/skeleton/Skeletons";
 import { Button, Container } from "@/components/ui";
 import { CATALOG_PATH, catalogHref, parseCatalogSearchParams } from "@/lib/filters";
 import { getFilterOptions, getProducts } from "@/lib/sanity/queries";
 import { getShopSettings } from "@/lib/sanity/settings";
+import { buildBreadcrumbJsonLd } from "@/lib/seo/breadcrumb";
+import { socialMetadata } from "@/lib/seo/metadata";
+import { siteUrl } from "@/lib/site-url";
 import { buildWhatsAppLink, genericInquiryMessage, sizeWhatsAppLink } from "@/lib/whatsapp";
 import { rethrowDuringBuild } from "@/lib/build-phase";
 
@@ -15,11 +19,14 @@ type SearchParams = Promise<Record<string, string | string[] | undefined>>;
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getShopSettings();
+  const title = "Tyres in Karachi";
+  const description = `Car, SUV, truck, forklift and off-road tyres from the brands we import and deal in, at ${settings.addressLine}, ${settings.city}. Filter by brand, size or price, or message us on WhatsApp.`;
   return {
-    title: "Tyres in Karachi",
-    description: `Car, SUV, truck, forklift and off-road tyres from the brands we import and deal in, at ${settings.addressLine}, ${settings.city}. Filter by brand, size or price, or message us on WhatsApp.`,
+    title,
+    description,
     // Every filtered or paged view is the same catalog; only /tyres is indexed.
     alternates: { canonical: CATALOG_PATH },
+    ...socialMetadata({ title, description, path: CATALOG_PATH, siteName: settings.shopName }),
   };
 }
 
@@ -84,6 +91,15 @@ async function Catalog({ searchParams }: { searchParams: SearchParams }) {
 export default function TyresPage({ searchParams }: { searchParams: SearchParams }) {
   return (
     <Container className="py-8 md:py-12">
+      <JsonLd
+        data={buildBreadcrumbJsonLd(
+          [
+            { name: "Home", path: "/" },
+            { name: "Tyres", path: CATALOG_PATH },
+          ],
+          siteUrl,
+        )}
+      />
       <h1 className="text-h1">Tyres</h1>
       <p className="mt-3 mb-8 max-w-[60ch] text-body-lg text-muted">
         Car, SUV, truck, forklift and off-road tyres. Filter by brand, size or price — or message

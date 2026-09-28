@@ -5,6 +5,7 @@ import { ShopVisitDetails } from "@/components/shop/ShopVisitDetails";
 import { Button, Container } from "@/components/ui";
 import { formatPhoneDisplay } from "@/lib/format";
 import { getShopSettings } from "@/lib/sanity/settings";
+import { socialMetadata } from "@/lib/seo/metadata";
 import {
   buildWhatsAppLink,
   deliveryInquiryMessage,
@@ -13,11 +14,14 @@ import {
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getShopSettings();
+  // The layout's title template appends the shop name.
+  const title = `Contact and location in ${settings.city}`;
+  const description = `Find ${settings.shopName} on ${settings.addressLine}, ${settings.city}. Opening hours, phone and WhatsApp. Message us your tyre size and we will reply.`;
   return {
-    // The layout's title template appends the shop name.
-    title: `Contact and location in ${settings.city}`,
-    description: `Find ${settings.shopName} on ${settings.addressLine}, ${settings.city}. Opening hours, phone and WhatsApp. Message us your tyre size and we will reply.`,
+    title,
+    description,
     alternates: { canonical: "/contact" },
+    ...socialMetadata({ title, description, path: "/contact", siteName: settings.shopName }),
   };
 }
 

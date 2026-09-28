@@ -7,15 +7,19 @@ import { Button, Container } from "@/components/ui";
 import { RELATIONSHIP_GROUPS } from "@/lib/brand";
 import { getBrands } from "@/lib/sanity/queries";
 import { getShopSettings } from "@/lib/sanity/settings";
+import { socialMetadata } from "@/lib/seo/metadata";
 import { buildWhatsAppLink, genericInquiryMessage } from "@/lib/whatsapp";
 import { rethrowDuringBuild } from "@/lib/build-phase";
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getShopSettings();
+  const title = `Tyre Brands in ${settings.city}`;
+  const description = `The tyre brands ${settings.shopName} imports, deals in and stocks in ${settings.city}. See which are direct imports, then browse each brand's sizes or message us on WhatsApp.`;
   return {
-    title: `Tyre Brands in ${settings.city}`,
-    description: `The tyre brands ${settings.shopName} imports, deals in and stocks in ${settings.city}. See which are direct imports, then browse each brand's sizes or message us on WhatsApp.`,
+    title,
+    description,
     alternates: { canonical: "/brands" },
+    ...socialMetadata({ title, description, path: "/brands", siteName: settings.shopName }),
   };
 }
 

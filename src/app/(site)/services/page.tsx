@@ -7,6 +7,7 @@ import { ShopVisitDetails } from "@/components/shop/ShopVisitDetails";
 import { Button, Container } from "@/components/ui";
 import { getServices } from "@/lib/sanity/queries";
 import { getShopSettings } from "@/lib/sanity/settings";
+import { socialMetadata } from "@/lib/seo/metadata";
 import {
   buildWhatsAppLink,
   deliveryInquiryMessage,
@@ -25,10 +26,13 @@ export async function generateMetadata(): Promise<Metadata> {
     console.error("Services unavailable for metadata:", error);
   }
   const offered = names.length > 0 ? `${names.join(", ")} at ` : "Tyre services at ";
+  const title = `Tyre Services in ${settings.city}`;
+  const description = `${offered}${settings.shopName}, ${settings.addressLine}, ${settings.city}. Message us on WhatsApp to book or ask a question.`;
   return {
-    title: `Tyre Services in ${settings.city}`,
-    description: `${offered}${settings.shopName}, ${settings.addressLine}, ${settings.city}. Message us on WhatsApp to book or ask a question.`,
+    title,
+    description,
     alternates: { canonical: "/services" },
+    ...socialMetadata({ title, description, path: "/services", siteName: settings.shopName }),
   };
 }
 

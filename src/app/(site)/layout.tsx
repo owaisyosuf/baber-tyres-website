@@ -5,6 +5,7 @@ import { StickyContact } from "@/components/layout/StickyContact";
 import { LocalBusinessJsonLd } from "@/components/seo/LocalBusinessJsonLd";
 import { inter, sora } from "@/lib/fonts";
 import { getShopSettings } from "@/lib/sanity/settings";
+import { socialMetadata } from "@/lib/seo/metadata";
 import { siteUrl } from "@/lib/site-url";
 import "./globals.css";
 
@@ -20,6 +21,14 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     description: settings.seo.description,
     applicationName: settings.shopName,
+    // Pages that set their own openGraph replace this whole object, and build theirs
+    // through socialMetadata too, so the site name and locale carry over.
+    ...socialMetadata({
+      title: settings.seo.title,
+      description: settings.seo.description,
+      path: "/",
+      siteName: settings.shopName,
+    }),
   };
 }
 
