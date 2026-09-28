@@ -13,6 +13,8 @@
 export const siteConfig = {
   shopName: "Baber Tyres Corporation",
   tagline: "Importer & Dealer of 20+ Tyre Brands",
+  /** The owner's confirmed brand count, shown as-is ("20+"); the site never computes it from what is seeded. */
+  brandCountLabel: "20+",
 
   addressLine: "M.A. Jinnah Road",
   city: "Karachi",
