@@ -5,6 +5,7 @@ import {
   productWhatsAppLink,
   brandInquiryMessage,
   categoryInquiryMessage,
+  deliveryInquiryMessage,
   serviceInquiryMessage,
   genericInquiryMessage,
   sizeInquiryMessage,
@@ -52,6 +53,12 @@ describe("context-aware messages", () => {
 
   it("includes the category keyword", () => {
     expect(categoryInquiryMessage("truck")).toContain("looking for truck tyres");
+  });
+
+  it("asks about delivery charges without quoting any", () => {
+    const message = deliveryInquiryMessage();
+    expect(message).toContain("delivery charges");
+    expect(message).not.toMatch(/\d/);
   });
 
   it("includes the service name", () => {

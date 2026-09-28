@@ -38,6 +38,10 @@ export function serviceInquiryMessage(serviceName: string): string {
   return `Hi ${siteConfig.shopName}, I'd like to inquire about ${serviceName}.`;
 }
 
+export function deliveryInquiryMessage(): string {
+  return `Hi ${siteConfig.shopName}, I'd like to know the delivery charges for my area.`;
+}
+
 export function genericInquiryMessage(): string {
   return `Hi ${siteConfig.shopName}, I have a question about your tyres.`;
 }
