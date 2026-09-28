@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { PhoneIcon, WhatsAppIcon } from "@/components/icons";
+import { ShopMap } from "@/components/shop/ShopMap";
 import { ShopVisitDetails } from "@/components/shop/ShopVisitDetails";
 import { Button, Container } from "@/components/ui";
 import { formatPhoneDisplay } from "@/lib/format";
-import { mapsDirectionsUrl, safeMapEmbedUrl } from "@/lib/maps";
 import { getShopSettings } from "@/lib/sanity/settings";
 import {
   buildWhatsAppLink,
@@ -26,8 +26,6 @@ const cardClassName = "flex flex-col gap-4 rounded-lg border border-border bg-su
 export default async function ContactPage() {
   const settings = await getShopSettings();
   const phoneDisplay = formatPhoneDisplay(settings.phoneE164);
-  const embedUrl = safeMapEmbedUrl(settings.mapEmbedUrl);
-  const directionsUrl = mapsDirectionsUrl(settings);
 
   return (
     <Container className="py-8 md:py-12">
@@ -92,29 +90,9 @@ export default async function ContactPage() {
         <h2 id="contact-map" className="text-h2">
           Find us
         </h2>
-        {embedUrl ? (
-          // Below the fold and lazy, so it never competes with the page's LCP.
-          <div className="mt-6 aspect-[4/3] overflow-hidden rounded-lg border border-border bg-surface md:aspect-[16/7]">
-            <iframe
-              src={embedUrl}
-              title={`Map showing ${settings.shopName} on ${settings.addressLine}, ${settings.city}`}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              allowFullScreen
-              className="h-full w-full border-0"
-            />
-          </div>
-        ) : null}
-        <p className="mt-4 text-body">
-          <a
-            href={directionsUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-accent underline underline-offset-4"
-          >
-            Open {settings.addressLine}, {settings.city} in Google Maps
-          </a>
-        </p>
+        <div className="mt-6">
+          <ShopMap settings={settings} />
+        </div>
       </section>
     </Container>
   );

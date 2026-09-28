@@ -2,18 +2,29 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 const queries = vi.hoisted(() => ({
+  getBrands: vi.fn(),
   getCategories: vi.fn(),
   getHomepageData: vi.fn(),
+  getServices: vi.fn(),
 }));
 vi.mock("@/lib/sanity/queries", () => queries);
 
+const shopSettings = vi.hoisted(() => ({ getShopSettings: vi.fn() }));
+vi.mock("@/lib/sanity/settings", () => shopSettings);
+
+let BrandStrip: typeof import("./BrandStrip").BrandStrip;
 let CategoryGrid: typeof import("./CategoryGrid").CategoryGrid;
+let LocationBlock: typeof import("./LocationBlock").LocationBlock;
+let ServicesSummary: typeof import("./ServicesSummary").ServicesSummary;
 let FeaturedProducts: typeof import("./FeaturedProducts").FeaturedProducts;
 
 beforeAll(async () => {
   process.env.NEXT_PUBLIC_SANITY_PROJECT_ID = "testproj";
   process.env.NEXT_PUBLIC_SANITY_DATASET = "production";
+  ({ BrandStrip } = await import("./BrandStrip"));
   ({ CategoryGrid } = await import("./CategoryGrid"));
+  ({ LocationBlock } = await import("./LocationBlock"));
+  ({ ServicesSummary } = await import("./ServicesSummary"));
   ({ FeaturedProducts } = await import("./FeaturedProducts"));
 });
 
@@ -94,5 +105,78 @@ describe("FeaturedProducts", () => {
   it("hides the section when Sanity fails", async () => {
     queries.getHomepageData.mockRejectedValue(new Error("down"));
     expect(await render(FeaturedProducts)).toBe("");
+  });
+});
+
+const brand = (slug: string, name: string, relationship: string) => ({
+  _id: `brand-${slug}`,
+  name,
+  slug,
+  relationship,
+  logo: null,
+  description: null,
+});
+
+describe("BrandStrip", () => {
+  it("shows importers before dealers, each linking to its brand page", async () => {
+    // Sanity returns them ordered by relationship; the strip still groups them.
+    queries.getBrands.mockResolvedValue([
+      brand("dunlop", "Dunlop", "dealer"),
+      brand("yokohama", "Yokohama", "importer"),
+      brand("rapid", "Rapid", "stocked"),
+    ]);
+    const markup = await render(BrandStrip);
+    expect(markup).toContain("20+ tyre brands");
+    expect(markup).toContain('href="/brands/yokohama"');
+    expect(markup).toContain('href="/brands/dunlop"');
+    expect(markup.indexOf("Brands we import")).toBeLessThan(markup.indexOf("Brands we deal in"));
+    expect(markup.indexOf("Brands we deal in")).toBeLessThan(markup.indexOf("Also in stock"));
+    expect(markup).toContain("Importer");
+    expect(markup).toContain("Dealer");
+  });
+
+  it("is left out entirely when no brand is published or Sanity fails", async () => {
+    queries.getBrands.mockResolvedValue([]);
+    expect(await render(BrandStrip)).toBe("");
+    queries.getBrands.mockRejectedValue(new Error("down"));
+    expect(await render(BrandStrip)).toBe("");
+  });
+});
+
+describe("ServicesSummary", () => {
+  it("lists each service and links to its section on /services", async () => {
+    queries.getServices.mockResolvedValue([
+      {
+        _id: "s1",
+        name: "Tyre Fitting",
+        slug: "tyre-fitting",
+        description: "Fitting at our shop.",
+        icon: "fitting",
+      },
+    ]);
+    const markup = await render(ServicesSummary);
+    expect(markup).toContain("Tyre Fitting");
+    expect(markup).toContain('href="/services#tyre-fitting"');
+    expect(markup).toContain('href="/services"');
+  });
+
+  it("is left out when there are no services or Sanity fails", async () => {
+    queries.getServices.mockResolvedValue([]);
+    expect(await render(ServicesSummary)).toBe("");
+    queries.getServices.mockRejectedValue(new Error("down"));
+    expect(await render(ServicesSummary)).toBe("");
+  });
+});
+
+describe("LocationBlock", () => {
+  it("states delivery as chargeable and the Sunday closure, from the settings", async () => {
+    const { resolveSettings } = await import("@/lib/settings");
+    shopSettings.getShopSettings.mockResolvedValue(resolveSettings(null));
+    const markup = await render(LocationBlock);
+    expect(markup).toContain("charges apply");
+    expect(markup).not.toMatch(/free delivery/i);
+    expect(markup).toContain("Sunday");
+    expect(markup).toContain("Closed");
+    expect(markup).toContain("WhatsApp for delivery charges");
   });
 });
