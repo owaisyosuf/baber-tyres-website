@@ -5,7 +5,7 @@ const builder = createImageUrlBuilder({ projectId, dataset });
 
 /** The bits of a Sanity image the URL builder needs — what the queries project. */
 export interface SanityImageRef {
-  asset: { _ref: string } | null;
+  asset?: { _ref: string } | null;
 }
 
 /**

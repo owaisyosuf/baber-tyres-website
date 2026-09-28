@@ -483,7 +483,7 @@ export type BRANDS_QUERY_RESULT = Array<{
 
 // Source: src/lib/sanity/queries.ts
 // Variable: BRAND_BY_SLUG
-// Query: *[_type == "brand" && slug.current == $slug][0]{  _id,  name,  "slug": slug.current,  relationship,  logo,  description,  seo { title, description },  "products": *[_type == "product" && references(^._id)] | order(featured desc, _createdAt desc) {    _id,    name,    "slug": slug.current,    price,    inStock,    sizeLabelOverride,    treadPattern,    width,    profile,    rim,    images[]{ alt, asset }  }}
+// Query: *[_type == "brand" && slug.current == $slug][0]{  _id,  name,  "slug": slug.current,  relationship,  logo,  description,  seo { title, description },  "products": *[_type == "product" && references(^._id)] | order(featured desc, _createdAt desc) {    _id,    name,    "slug": slug.current,    price,    inStock,    sizeLabelOverride,    treadPattern,    width,    profile,    rim,    images[]{ alt, asset },    brand->{ name, "slug": slug.current, relationship }  }}
 export type BRAND_BY_SLUG_RESULT = {
   _id: string;
   name: string;
@@ -516,6 +516,11 @@ export type BRAND_BY_SLUG_RESULT = {
       alt: string;
       asset: SanityImageAssetReference | null;
     }>;
+    brand: {
+      name: string;
+      slug: string;
+      relationship: "dealer" | "importer" | "stocked";
+    };
   }>;
 } | null;
 
@@ -637,7 +642,7 @@ declare global {
     "*[_type == \"product\"]{ \"slug\": slug.current }": PRODUCT_SLUGS_QUERY_RESULT;
     "*[\n  _type == \"product\"\n  && slug.current != $slug\n  && (brand._ref == $brandId || category._ref == $categoryId)\n] | order((brand._ref == $brandId) desc, _createdAt desc) [0...4] {\n  _id,\n  name,\n  \"slug\": slug.current,\n  price,\n  inStock,\n  sizeLabelOverride,\n  treadPattern,\n  width,\n  profile,\n  rim,\n  images[]{ alt, asset },\n  brand->{ name, \"slug\": slug.current, relationship }\n}": RELATED_PRODUCTS_QUERY_RESULT;
     "*[_type == \"brand\"] | order(select(relationship == \"importer\" => 0, relationship == \"dealer\" => 1, 2) asc, displayOrder asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  relationship,\n  logo,\n  description\n}": BRANDS_QUERY_RESULT;
-    "*[_type == \"brand\" && slug.current == $slug][0]{\n  _id,\n  name,\n  \"slug\": slug.current,\n  relationship,\n  logo,\n  description,\n  seo { title, description },\n  \"products\": *[_type == \"product\" && references(^._id)] | order(featured desc, _createdAt desc) {\n    _id,\n    name,\n    \"slug\": slug.current,\n    price,\n    inStock,\n    sizeLabelOverride,\n    treadPattern,\n    width,\n    profile,\n    rim,\n    images[]{ alt, asset }\n  }\n}": BRAND_BY_SLUG_RESULT;
+    "*[_type == \"brand\" && slug.current == $slug][0]{\n  _id,\n  name,\n  \"slug\": slug.current,\n  relationship,\n  logo,\n  description,\n  seo { title, description },\n  \"products\": *[_type == \"product\" && references(^._id)] | order(featured desc, _createdAt desc) {\n    _id,\n    name,\n    \"slug\": slug.current,\n    price,\n    inStock,\n    sizeLabelOverride,\n    treadPattern,\n    width,\n    profile,\n    rim,\n    images[]{ alt, asset },\n    brand->{ name, \"slug\": slug.current, relationship }\n  }\n}": BRAND_BY_SLUG_RESULT;
     "*[_type == \"category\"] | order(displayOrder asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  icon\n}": CATEGORIES_QUERY_RESULT;
     "*[_type == \"category\" && slug.current == $slug][0]{\n  _id,\n  name,\n  \"slug\": slug.current,\n  description,\n  icon,\n  seo { title, description },\n  \"products\": *[_type == \"product\" && references(^._id)] | order(featured desc, _createdAt desc) {\n    _id,\n    name,\n    \"slug\": slug.current,\n    price,\n    inStock,\n    sizeLabelOverride,\n    treadPattern,\n    width,\n    profile,\n    rim,\n    images[]{ alt, asset },\n    brand->{ name, \"slug\": slug.current, relationship }\n  }\n}": CATEGORY_BY_SLUG_RESULT;
     "*[_type == \"service\"] | order(displayOrder asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  description,\n  icon,\n  seo { title, description }\n}": SERVICES_QUERY_RESULT;

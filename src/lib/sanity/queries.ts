@@ -302,7 +302,8 @@ export const BRAND_BY_SLUG = defineQuery(`*[_type == "brand" && slug.current == 
     width,
     profile,
     rim,
-    images[]{ alt, asset }
+    images[]{ alt, asset },
+    brand->{ name, "slug": slug.current, relationship }
   }
 }`);
 
