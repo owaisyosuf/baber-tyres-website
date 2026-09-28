@@ -30,6 +30,10 @@ export function brandInquiryMessage(brandName: string): string {
   return `Hi ${siteConfig.shopName}, I'm looking for ${brandName} tyres. Can you help?`;
 }
 
+export function categoryInquiryMessage(keyword: string): string {
+  return `Hi ${siteConfig.shopName}, I'm looking for ${keyword} tyres. Can you help?`;
+}
+
 export function serviceInquiryMessage(serviceName: string): string {
   return `Hi ${siteConfig.shopName}, I'd like to inquire about ${serviceName}.`;
 }
