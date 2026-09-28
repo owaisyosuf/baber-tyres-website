@@ -6,15 +6,17 @@ interface SpecRow {
 interface SpecsTableProps {
   size: string;
   category?: string | null;
+  treadPattern?: string | null;
   loadIndex?: string | null;
   speedRating?: string | null;
 }
 
 /** FR-B4: specs table on the product detail page. Rows the product has no value for are left out. */
-export function SpecsTable({ size, category, loadIndex, speedRating }: SpecsTableProps) {
+export function SpecsTable({ size, category, treadPattern, loadIndex, speedRating }: SpecsTableProps) {
   const rows: SpecRow[] = [
     { label: "Size", value: size },
     ...(category ? [{ label: "Category", value: category }] : []),
+    ...(treadPattern?.trim() ? [{ label: "Tread pattern", value: treadPattern.trim() }] : []),
     ...(loadIndex ? [{ label: "Load index", value: loadIndex }] : []),
     ...(speedRating ? [{ label: "Speed rating", value: speedRating }] : []),
   ];

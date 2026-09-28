@@ -16,6 +16,8 @@ export interface ProductCardProduct {
   price: number;
   inStock: boolean | null;
   sizeLabelOverride?: string | null;
+  /** Optional tread pattern name ("V553", "ES32"); nothing is shown when blank. */
+  treadPattern?: string | null;
   width: number;
   profile: number;
   rim: number;
@@ -48,6 +50,7 @@ export function ProductCard({
   // Stock defaults to true in Studio, so a document that never set it is in stock.
   const inStock = product.inStock !== false;
   const size = formatTyreSize(product);
+  const pattern = product.treadPattern?.trim();
   const image = product.images?.[0];
   const imageUrl = image ? sanityImageUrl(image, IMAGE_WIDTH, IMAGE_HEIGHT) : null;
 
@@ -104,6 +107,12 @@ export function ProductCard({
         </Heading>
 
         <p className="tabular text-small text-muted">{size}</p>
+        {pattern && (
+          <p className="text-small text-muted">
+            <span className="text-label uppercase">Pattern</span>{" "}
+            <span className="font-medium text-text">{pattern}</span>
+          </p>
+        )}
 
         <PriceTag price={product.price} muted={!inStock} />
 

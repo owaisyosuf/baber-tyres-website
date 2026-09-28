@@ -152,6 +152,7 @@ export default async function ProductPage({
             <SpecsTable
               size={size}
               category={product.category.name}
+              treadPattern={product.treadPattern}
               loadIndex={product.loadIndex}
               speedRating={product.speedRating}
             />

@@ -67,6 +67,13 @@ export const product = defineType({
         'For commercial sizing the width/profile/rim fields can\'t express, e.g. "11R22.5" or "7.00-12". Leave blank for standard car/SUV sizes — width/profile/rim are still required above even when this is set, for filtering.',
     }),
     defineField({
+      name: "treadPattern",
+      title: "Tread pattern",
+      type: "string",
+      description:
+        'The tread pattern name, e.g. "V553" or "ES32" for Yokohama. Optional: leave blank and no pattern is shown on the card or product page.',
+    }),
+    defineField({
       name: "loadIndex",
       title: "Load index",
       type: "string",
@@ -137,13 +144,14 @@ export const product = defineType({
       profile: "profile",
       rim: "rim",
       override: "sizeLabelOverride",
+      pattern: "treadPattern",
       media: "images.0",
     },
-    prepare({ title, brand, width, profile, rim, override, media }) {
+    prepare({ title, brand, width, profile, rim, override, pattern, media }) {
       const size = override || (width && profile && rim ? `${width}/${profile} R${rim}` : "");
       return {
         title,
-        subtitle: [brand, size].filter(Boolean).join(" · "),
+        subtitle: [brand, pattern, size].filter(Boolean).join(" · "),
         media,
       };
     },

@@ -108,6 +108,21 @@ describe("ProductCard", () => {
     expect(markup).toContain("In stock");
   });
 
+  it("shows the tread pattern when one is entered", () => {
+    const markup = html(
+      createElement(ProductCard, { product: product({ treadPattern: "V553" }) }),
+    );
+    expect(markup).toContain("Pattern");
+    expect(markup).toContain("V553");
+  });
+
+  it("shows no pattern line when the pattern is missing or blank", () => {
+    for (const treadPattern of [undefined, null, "", "   "]) {
+      const markup = html(createElement(ProductCard, { product: product({ treadPattern }) }));
+      expect(markup).not.toContain("Pattern");
+    }
+  });
+
   it("shows a commercial size through sizeLabelOverride", () => {
     const markup = html(
       createElement(ProductCard, {
