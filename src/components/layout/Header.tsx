@@ -14,7 +14,7 @@ const desktopListClassName = "flex items-center gap-1";
 /**
  * Sticky site header — FR-D1. Below `md` it is the wordmark and a menu
  * button (contact actions live in the sticky bottom bar, T014); from `md` up
- * it shows the full nav and a WhatsApp action, and from `xl` a search box.
+ * it shows the full nav, from `lg` a WhatsApp action, and from `xl` a search box.
  */
 export function Header() {
   return (
@@ -23,7 +23,7 @@ export function Header() {
         <Link
           href="/"
           aria-label={`${siteConfig.shopName} — home`}
-          className="font-display text-lg font-bold tracking-tight text-gradient"
+          className="inline-flex min-h-11 items-center font-display text-lg font-bold tracking-tight text-gradient"
         >
           {siteConfig.shopName}
         </Link>
@@ -43,7 +43,9 @@ export function Header() {
             </Suspense>
           </nav>
 
-          <div className="hidden md:block">
+          {/* From lg only: at md the nav plus this button overflow 768px, and
+              FloatingWhatsApp already covers md. */}
+          <div className="hidden lg:block">
             <Button
               href={genericWhatsAppLink()}
               variant="whatsapp"

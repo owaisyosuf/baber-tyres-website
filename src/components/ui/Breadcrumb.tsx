@@ -17,7 +17,11 @@ export function Breadcrumb({ items }: { items: readonly BreadcrumbItem[] }) {
           return (
             <li key={`${item.label}-${index}`} className="flex items-center gap-1.5">
               {item.href && !isLast ? (
-                <Link href={item.href} className="hover:text-accent">
+                // min-h-11 gives a 44px touch target; -my-3 keeps the row's visual height.
+                <Link
+                  href={item.href}
+                  className="-my-3 inline-flex min-h-11 items-center hover:text-accent"
+                >
                   {item.label}
                 </Link>
               ) : (
