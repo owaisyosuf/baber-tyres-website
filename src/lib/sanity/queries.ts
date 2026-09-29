@@ -1,5 +1,6 @@
 import { defineQuery } from "groq";
 import { cacheLife, cacheTag } from "next/cache";
+import { STANDARD_TYRE_SIZES } from "../tyre-sizes";
 import { client } from "./client";
 
 /**
@@ -164,10 +165,10 @@ export async function getProducts(
 
 /* Filter options ------------------------------------------------------------ */
 
-// What the catalog filter can offer: every brand and category, plus the sizes
-// that exist among published products so the size selects never list a size
-// nobody stocks. Sorted in getFilterOptions, since GROQ has no scalar sort that
-// is worth relying on.
+// What the catalog filter can offer: every brand and category from Sanity, and
+// the standard metric sizes (lib/tyre-sizes.ts) — the shop stocks far more
+// sizes than it lists, and a size with no listing leads to the WhatsApp
+// empty state rather than a dead end.
 export const FILTER_OPTIONS_QUERY = defineQuery(`{
   "brands": *[_type == "brand"] | order(select(relationship == "importer" => 0, relationship == "dealer" => 1, 2) asc, displayOrder asc) {
     name,
@@ -177,26 +178,15 @@ export const FILTER_OPTIONS_QUERY = defineQuery(`{
   "categories": *[_type == "category"] | order(displayOrder asc) {
     name,
     "slug": slug.current
-  },
-  "widths": array::unique(*[_type == "product" && defined(width)].width),
-  "profiles": array::unique(*[_type == "product" && defined(profile)].profile),
-  "rims": array::unique(*[_type == "product" && defined(rim)].rim)
+  }
 }`);
-
-const ascending = (values: number[] | null) => [...(values ?? [])].sort((a, b) => a - b);
 
 export async function getFilterOptions() {
   "use cache";
-  cacheTag("product", "brand", "category");
+  cacheTag("brand", "category");
   cacheLife("max");
   const options = await client.fetch(FILTER_OPTIONS_QUERY);
-  return {
-    brands: options.brands,
-    categories: options.categories,
-    widths: ascending(options.widths),
-    profiles: ascending(options.profiles),
-    rims: ascending(options.rims),
-  };
+  return { ...options, ...STANDARD_TYRE_SIZES };
 }
 
 /* Product detail ------------------------------------------------------------- */

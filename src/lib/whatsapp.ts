@@ -47,20 +47,24 @@ export function genericInquiryMessage(): string {
 }
 
 /**
- * For a visitor who searched for a size and found nothing: names the size they
- * were after when the filter carries a full width/profile/rim, and falls back
- * to the generic message otherwise.
+ * For a visitor who searched and found nothing: names the size they were after
+ * when the filter carries a full width/profile/rim, else what they typed into
+ * the search, and falls back to the generic message otherwise.
  */
 export function sizeInquiryMessage(size: {
   width?: number;
   profile?: number;
   rim?: number;
+  text?: string;
 }): string {
-  const { width, profile, rim } = size;
-  if (width === undefined || profile === undefined || rim === undefined) {
-    return genericInquiryMessage();
+  const { width, profile, rim, text } = size;
+  if (width !== undefined && profile !== undefined && rim !== undefined) {
+    return `Hi ${siteConfig.shopName}, I'm looking for ${formatTyreSize({ width, profile, rim })} tyres. Do you have them in stock?`;
   }
-  return `Hi ${siteConfig.shopName}, I'm looking for ${formatTyreSize({ width, profile, rim })} tyres. Do you have them in stock?`;
+  if (text) {
+    return `Hi ${siteConfig.shopName}, I'm looking for "${text}" tyres. Do you have them in stock?`;
+  }
+  return genericInquiryMessage();
 }
 
 export function productWhatsAppLink(product: {
@@ -83,7 +87,7 @@ export function genericWhatsAppLink(): string {
 }
 
 export function sizeWhatsAppLink(
-  size: { width?: number; profile?: number; rim?: number },
+  size: { width?: number; profile?: number; rim?: number; text?: string },
   phoneE164?: string,
 ): string {
   return buildWhatsAppLink(sizeInquiryMessage(size), phoneE164);
