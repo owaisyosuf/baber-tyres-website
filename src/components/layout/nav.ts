@@ -1,5 +1,6 @@
 /** FR-D1 primary navigation. `href`s are the routes built in Phases 3–4. */
 export const navItems = [
+  { label: "Home", href: "/" },
   { label: "Tyres", href: "/tyres" },
   { label: "Brands", href: "/brands" },
   { label: "Services", href: "/services" },
@@ -14,5 +15,7 @@ export const navItems = [
  */
 export function isCurrentRoute(pathname: string | null, href: string): boolean {
   if (!pathname) return false;
+  // Every path starts with "/", so Home only matches itself.
+  if (href === "/") return pathname === "/";
   return pathname === href || pathname.startsWith(`${href}/`);
 }

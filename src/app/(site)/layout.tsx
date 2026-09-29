@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { FloatingWhatsApp } from "@/components/layout/FloatingWhatsApp";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { StickyContact } from "@/components/layout/StickyContact";
@@ -57,6 +58,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </main>
         <Footer />
         <StickyContact />
+        <FloatingWhatsApp />
         <LocalBusinessJsonLd />
       </body>
     </html>

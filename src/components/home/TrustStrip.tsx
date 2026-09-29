@@ -6,16 +6,18 @@ import { trustStripItems } from "@/lib/trust";
 import { rethrowDuringBuild } from "@/lib/build-phase";
 
 /**
- * Numeric trust strip — FR-A2. Sits under the hero as three plain facts. If
- * Sanity cannot be reached the importer count is dropped rather than guessed.
+ * Trust strip — FR-A2. Sits under the hero as three plain facts. If Sanity
+ * cannot be reached the importer stat is dropped rather than guessed.
  */
 export async function TrustStrip() {
   const settings = await getShopSettings();
 
-  let importerCount = 0;
+  let importerNames: string[] = [];
   try {
     const brands = await getBrands();
-    importerCount = brands.filter((brand) => brand.relationship === "importer").length;
+    importerNames = brands
+      .filter((brand) => brand.relationship === "importer")
+      .map((brand) => brand.name);
   } catch (error) {
     rethrowDuringBuild(error);
     console.error("Brands unavailable for the trust strip:", error);
@@ -23,7 +25,7 @@ export async function TrustStrip() {
 
   const items = trustStripItems({
     brandCountLabel: siteConfig.brandCountLabel,
-    importerCount,
+    importerNames,
     city: settings.city,
     addressLine: settings.addressLine,
   });
