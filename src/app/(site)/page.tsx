@@ -3,6 +3,7 @@ import { BrandStrip } from "@/components/home/BrandStrip";
 import { CategoryGrid } from "@/components/home/CategoryGrid";
 import { FeaturedProducts } from "@/components/home/FeaturedProducts";
 import { Hero } from "@/components/home/Hero";
+import { HowToBuySection } from "@/components/home/HowToBuySection";
 import { LocationBlock } from "@/components/home/LocationBlock";
 import { ServicesSummary } from "@/components/home/ServicesSummary";
 import { SizeFinder } from "@/components/home/SizeFinder";
@@ -19,6 +20,7 @@ export default function HomePage() {
     <>
       <Hero />
       <TrustStrip />
+      <HowToBuySection />
       <SizeFinder />
       <CategoryGrid />
       <FeaturedProducts />

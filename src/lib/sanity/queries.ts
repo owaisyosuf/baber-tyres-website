@@ -81,6 +81,7 @@ export const PRODUCTS_QUERY = defineQuery(`*[
   && (!defined($rim) || rim == $rim)
   && (!defined($minPrice) || price >= $minPrice)
   && (!defined($maxPrice) || price <= $maxPrice)
+  && (!defined($text) || [name, sizeLabelOverride, treadPattern, brand->name] match $text)
 ] | order(featured desc, _createdAt desc) [$start...$end] {
   _id,
   name,
@@ -107,9 +108,12 @@ export const PRODUCTS_COUNT_QUERY = defineQuery(`count(*[
   && (!defined($rim) || rim == $rim)
   && (!defined($minPrice) || price >= $minPrice)
   && (!defined($maxPrice) || price <= $maxPrice)
+  && (!defined($text) || [name, sizeLabelOverride, treadPattern, brand->name] match $text)
 ])`);
 
 export interface ProductFilters {
+  /** Free text from the site search, matched against name, size label, pattern and brand. */
+  text?: string;
   brandSlugs?: string[];
   categorySlug?: string;
   width?: number;
@@ -126,6 +130,7 @@ export interface Pagination {
 
 function productFilterParams(filters: ProductFilters) {
   return {
+    text: filters.text ?? null,
     brandSlugs: filters.brandSlugs ?? null,
     categorySlug: filters.categorySlug ?? null,
     width: filters.width ?? null,

@@ -7,13 +7,14 @@ import { genericWhatsAppLink } from "@/lib/whatsapp";
 import { CurrentNavList } from "./CurrentNavList";
 import { MobileNav } from "./MobileNav";
 import { NavList } from "./NavList";
+import { SiteSearch } from "./SiteSearch";
 
 const desktopListClassName = "flex items-center gap-1";
 
 /**
  * Sticky site header — FR-D1. Below `md` it is the wordmark and a menu
  * button (contact actions live in the sticky bottom bar, T014); from `md` up
- * it shows the full nav and a WhatsApp action.
+ * it shows the full nav and a WhatsApp action, and from `xl` a search box.
  */
 export function Header() {
   return (
@@ -26,6 +27,8 @@ export function Header() {
         >
           {siteConfig.shopName}
         </Link>
+
+        <SiteSearch size="compact" className="hidden max-w-64 flex-1 xl:flex" />
 
         <div className="flex items-center gap-2">
           <nav aria-label="Primary" className="hidden md:block">

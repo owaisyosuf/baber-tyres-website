@@ -8,6 +8,8 @@ import type { ProductFilters } from "@/lib/sanity/queries";
  * parseCatalogSearchParams, the same validation the server applies.
  */
 export interface RawFilters {
+  /** The site-search text; not edited in the panel, only carried along. */
+  text: string;
   brands: string[];
   category: string;
   width: string;
@@ -18,6 +20,7 @@ export interface RawFilters {
 }
 
 export const EMPTY_RAW: RawFilters = {
+  text: "",
   brands: [],
   category: "",
   width: "",
@@ -29,6 +32,7 @@ export const EMPTY_RAW: RawFilters = {
 
 export function filtersToRaw(filters: ProductFilters): RawFilters {
   return {
+    text: filters.text ?? "",
     brands: [...(filters.brandSlugs ?? [])],
     category: filters.categorySlug ?? "",
     width: filters.width?.toString() ?? "",
@@ -44,6 +48,7 @@ export function rawToFilters(raw: RawFilters): ProductFilters {
   const params = new URLSearchParams();
   if (raw.brands.length > 0) params.set("brand", raw.brands.join(","));
   for (const [name, value] of [
+    ["q", raw.text],
     ["category", raw.category],
     ["width", raw.width],
     ["profile", raw.profile],

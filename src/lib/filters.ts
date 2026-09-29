@@ -8,7 +8,7 @@ import type { ProductFilters } from "./sanity/queries";
  * fails is dropped on its own, so one bad param never discards the rest.
  *
  * URL contract:
- *   /tyres?brand=yokohama,dunlop&category=truck&width=185&profile=65&rim=15&min=5000&max=40000&page=2
+ *   /tyres?q=bluearth&brand=yokohama,dunlop&category=truck&width=185&profile=65&rim=15&min=5000&max=40000&page=2
  */
 
 /** Where the catalog lives; every filter URL is this path plus a query string. */
@@ -81,7 +81,24 @@ function bounded(
   return Number.isFinite(number) && number >= min && number <= max ? number : undefined;
 }
 
+/** Longest search text kept; anything beyond is cut off. */
+const MAX_TEXT_LENGTH = 60;
+// Letters, digits, spaces and the punctuation tyre sizes use ("185/65 R15", "7.00-12").
+const TEXT_DISALLOWED = /[^\p{L}\p{N} ./-]/gu;
+
+/** Tidies free search text: disallowed characters become spaces, whitespace collapses, length is capped. */
+export function cleanSearchText(value: string | undefined): string | undefined {
+  const cleaned = value
+    ?.replace(TEXT_DISALLOWED, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, MAX_TEXT_LENGTH)
+    .trim();
+  return cleaned || undefined;
+}
+
 export function parseCatalogSearchParams(input: SearchParamsInput): CatalogQuery {
+  const text = cleanSearchText(first(input, "q"));
   const brandSlugs = [
     ...new Set(
       all(input, "brand")
@@ -108,6 +125,7 @@ export function parseCatalogSearchParams(input: SearchParamsInput): CatalogQuery
     bounded(first(input, "page"), INTEGER, { min: 1, max: MAX_PAGE }) ?? 1;
 
   const filters: ProductFilters = {
+    ...(text !== undefined && { text }),
     ...(brandSlugs.length > 0 && { brandSlugs }),
     ...(categorySlug !== undefined && { categorySlug }),
     ...(width !== undefined && { width }),
@@ -124,10 +142,11 @@ export function parseCatalogSearchParams(input: SearchParamsInput): CatalogQuery
  * The canonical query string for a set of filters — the inverse of
  * parseCatalogSearchParams. Parameters come in a fixed order, brands keep the
  * order given, and page 1 is left out, so a canonical URL round-trips exactly.
- * Every value is already a validated slug or number, so nothing needs escaping.
+ * Slugs and numbers are already validated; only the search text is encoded.
  */
 export function buildCatalogQuery(filters: ProductFilters, page = 1): string {
   const parts: string[] = [];
+  if (filters.text !== undefined) parts.push(`q=${encodeURIComponent(filters.text)}`);
   if (filters.brandSlugs?.length) parts.push(`brand=${filters.brandSlugs.join(",")}`);
   if (filters.categorySlug !== undefined) parts.push(`category=${filters.categorySlug}`);
   if (filters.width !== undefined) parts.push(`width=${filters.width}`);
@@ -151,6 +170,7 @@ export function catalogHref(filters: ProductFilters, page = 1): string {
  */
 export function countActiveFilters(filters: ProductFilters): number {
   return (
+    (filters.text !== undefined ? 1 : 0) +
     (filters.brandSlugs?.length ?? 0) +
     (filters.categorySlug !== undefined ? 1 : 0) +
     (filters.width !== undefined ? 1 : 0) +

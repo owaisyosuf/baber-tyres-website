@@ -6,7 +6,14 @@ import { WhatsAppIcon } from "@/components/icons";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { CatalogSkeleton } from "@/components/skeleton/Skeletons";
 import { Button, Container, PageHero } from "@/components/ui";
-import { CATALOG_PATH, catalogHref, parseCatalogSearchParams } from "@/lib/filters";
+import {
+  buildCatalogQuery,
+  CATALOG_PATH,
+  catalogHref,
+  parseCatalogSearchParams,
+} from "@/lib/filters";
+import { SiteSearch } from "@/components/layout/SiteSearch";
+import { resolveSearchText } from "@/lib/search";
 import { getFilterOptions, getProducts } from "@/lib/sanity/queries";
 import { getShopSettings } from "@/lib/sanity/settings";
 import { buildBreadcrumbJsonLd } from "@/lib/seo/breadcrumb";
@@ -56,6 +63,23 @@ async function CatalogUnavailable() {
 async function Catalog({ searchParams }: { searchParams: SearchParams }) {
   const { filters, page } = parseCatalogSearchParams(await searchParams);
 
+  // Site search: a size, brand or vehicle type in the text becomes a real
+  // filter, so the visitor lands on the same URL the filter panel would build.
+  if (filters.text !== undefined) {
+    let resolved;
+    try {
+      const options = await getFilterOptions();
+      resolved = resolveSearchText(filters, options.brands, options.categories);
+    } catch (error) {
+      rethrowDuringBuild(error);
+      console.error("Filter options unavailable for search:", error);
+      return <CatalogUnavailable />;
+    }
+    if (buildCatalogQuery(resolved) !== buildCatalogQuery(filters)) {
+      redirect(catalogHref(resolved));
+    }
+  }
+
   let data;
   try {
     const [result, options, settings] = await Promise.all([
@@ -103,9 +127,11 @@ export default function TyresPage({ searchParams }: { searchParams: SearchParams
       <PageHero
         eyebrow="Tyre catalog"
         title="Tyres"
-        intro="Car, SUV, truck, forklift and off-road tyres. Filter by brand, size or price — or message us and we will find your size."
+        intro="Car, SUV, truck, forklift and off-road tyres. Search or filter by brand, size or price — or message us and we will find your size."
         breadcrumb={[{ label: "Tyres" }]}
-      />
+      >
+        <SiteSearch className="w-full max-w-lg" />
+      </PageHero>
       <Container className="py-8 md:py-12">
         <Suspense fallback={<CatalogSkeleton />}>
           <Catalog searchParams={searchParams} />

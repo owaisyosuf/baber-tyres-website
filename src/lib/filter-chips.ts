@@ -36,6 +36,14 @@ export function activeFilterChips(
 ): FilterChip[] {
   const chips: FilterChip[] = [];
 
+  if (filters.text !== undefined) {
+    chips.push({
+      key: "text",
+      label: `“${filters.text}”`,
+      href: catalogHref({ ...filters, text: undefined }),
+    });
+  }
+
   for (const slug of filters.brandSlugs ?? []) {
     const remaining = (filters.brandSlugs ?? []).filter((other) => other !== slug);
     chips.push({

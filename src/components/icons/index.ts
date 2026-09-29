@@ -13,6 +13,7 @@ export {
   AlignmentIcon,
   BalancingIcon,
   FilterIcon,
+  SearchIcon,
   MenuIcon,
   CloseIcon,
   CheckIcon,

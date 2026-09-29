@@ -287,3 +287,21 @@ describe("countActiveFilters", () => {
     expect(countActiveFilters({ maxPrice: 100 })).toBe(1);
   });
 });
+
+describe("search text (q)", () => {
+  it("round-trips through the URL, encoded", () => {
+    const { filters } = parse("q=7.00-12%20ae%2025&brand=yokohama");
+    expect(filters).toEqual({ text: "7.00-12 ae 25", brandSlugs: ["yokohama"] });
+    expect(buildCatalogQuery(filters)).toBe("q=7.00-12%20ae%2025&brand=yokohama");
+    expect(parse(buildCatalogQuery(filters)).filters).toEqual(filters);
+  });
+
+  it("drops a blank or all-symbol search", () => {
+    expect(parse("q=%20%20").filters).toEqual({});
+    expect(parse("q=%22%5D%7C%7C").filters).toEqual({});
+  });
+
+  it("counts as one active filter", () => {
+    expect(countActiveFilters({ text: "bluearth" })).toBe(1);
+  });
+});

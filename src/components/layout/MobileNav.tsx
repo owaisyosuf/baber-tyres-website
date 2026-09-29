@@ -4,6 +4,7 @@ import { Suspense, useEffect, useRef } from "react";
 import { CloseIcon, MenuIcon } from "@/components/icons";
 import { CurrentNavList } from "./CurrentNavList";
 import { NavList } from "./NavList";
+import { SiteSearch } from "./SiteSearch";
 
 const DESKTOP_QUERY = "(min-width: 768px)";
 
@@ -67,6 +68,7 @@ export function MobileNav() {
               <CloseIcon />
             </button>
           </div>
+          <SiteSearch onSubmit={close} className="px-4 pb-4" />
           <nav aria-label="Mobile" className="px-4 pb-6">
             <Suspense
               fallback={
