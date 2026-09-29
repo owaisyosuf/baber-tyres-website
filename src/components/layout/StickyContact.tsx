@@ -21,7 +21,7 @@ export async function StickyContact() {
   return (
     <aside
       aria-label="Quick contact"
-      className="fixed inset-x-0 bottom-0 z-30 flex gap-2 border-t border-border bg-background/95 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] backdrop-blur md:hidden [body:has(dialog[open])_&]:hidden"
+      className="fixed inset-x-0 bottom-0 z-30 flex gap-2 border-t border-border bg-background/98 px-4 pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] md:hidden [body:has(dialog[open])_&]:hidden"
     >
       <Button
         href={buildWhatsAppLink(genericInquiryMessage(), settings.whatsappE164)}

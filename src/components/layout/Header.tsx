@@ -17,7 +17,7 @@ const desktopListClassName = "flex items-center gap-1";
  */
 export function Header() {
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b border-border bg-background/98">
       <Container className="flex h-16 items-center justify-between gap-4">
         <Link
           href="/"
