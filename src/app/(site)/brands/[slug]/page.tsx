@@ -13,6 +13,7 @@ import {
 } from "@/lib/brand";
 import { rethrowDuringBuild } from "@/lib/build-phase";
 import { catalogHref } from "@/lib/filters";
+import { slugParams } from "@/lib/static-params";
 import { sanityImageUrl } from "@/lib/sanity/image";
 import { getBrandBySlug, getBrands } from "@/lib/sanity/queries";
 import { getShopSettings } from "@/lib/sanity/settings";
@@ -26,8 +27,7 @@ const LOGO_HEIGHT = 160;
 
 export async function generateStaticParams() {
   try {
-    const brands = await getBrands();
-    return brands.map((brand) => ({ slug: brand.slug }));
+    return slugParams(await getBrands());
   } catch (error) {
     // Fails the build. At request time (only `next dev` calls this then) Cache Components
     // rejects an empty list, so hand back one placeholder: the page then hits the same

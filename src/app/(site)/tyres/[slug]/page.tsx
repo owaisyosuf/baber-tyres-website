@@ -28,14 +28,14 @@ import { siteUrl } from "@/lib/site-url";
 import type { RELATED_PRODUCTS_QUERY_RESULT } from "@/sanity/types";
 import { buildWhatsAppLink, productInquiryMessage } from "@/lib/whatsapp";
 import { rethrowDuringBuild } from "@/lib/build-phase";
+import { slugParams } from "@/lib/static-params";
 
 const OG_IMAGE_WIDTH = 1200;
 const OG_IMAGE_HEIGHT = 900;
 
 export async function generateStaticParams() {
   try {
-    const products = await getProductSlugs();
-    return products.map((product) => ({ slug: product.slug }));
+    return slugParams(await getProductSlugs());
   } catch (error) {
     // Fails the build. At request time (only `next dev` calls this then) Cache Components
     // rejects an empty list, so hand back one placeholder: the page then hits the same

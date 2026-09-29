@@ -14,6 +14,7 @@ import {
   categoryPageTitle,
 } from "@/lib/category";
 import { rethrowDuringBuild } from "@/lib/build-phase";
+import { slugParams } from "@/lib/static-params";
 import { CATALOG_PATH, catalogHref } from "@/lib/filters";
 import { getCategories, getCategoryBySlug } from "@/lib/sanity/queries";
 import { getShopSettings } from "@/lib/sanity/settings";
@@ -24,8 +25,7 @@ import { buildWhatsAppLink, categoryInquiryMessage } from "@/lib/whatsapp";
 
 export async function generateStaticParams() {
   try {
-    const categories = await getCategories();
-    return categories.map((category) => ({ slug: category.slug }));
+    return slugParams(await getCategories());
   } catch (error) {
     // Fails the build. At request time (only `next dev` calls this then) Cache Components
     // rejects an empty list, so hand back one placeholder: the page then hits the same
