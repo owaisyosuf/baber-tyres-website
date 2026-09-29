@@ -103,7 +103,12 @@ export default async function BrandPage({ params }: PageProps<"/brands/[slug]">)
       />
 
       <header className="mt-6 flex flex-col gap-6 md:flex-row md:items-center md:gap-10">
-        <div className="flex h-32 w-full items-center justify-center overflow-hidden rounded-lg border border-border bg-surface md:w-64 md:shrink-0">
+        <div
+          className={[
+            "flex h-32 w-full items-center justify-center overflow-hidden rounded-lg border border-border md:w-64 md:shrink-0",
+            logoUrl ? "bg-text" : "bg-surface",
+          ].join(" ")}
+        >
           {logoUrl ? (
             <Image
               src={logoUrl}

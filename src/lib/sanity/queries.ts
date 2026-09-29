@@ -320,7 +320,8 @@ export const CATEGORIES_QUERY = defineQuery(`*[_type == "category"] | order(disp
   _id,
   name,
   "slug": slug.current,
-  icon
+  icon,
+  image{ alt, asset }
 }`);
 
 export async function getCategories() {
@@ -336,6 +337,7 @@ export const CATEGORY_BY_SLUG = defineQuery(`*[_type == "category" && slug.curre
   "slug": slug.current,
   description,
   icon,
+  image{ alt, asset },
   seo { title, description },
   "products": *[_type == "product" && references(^._id)] | order(featured desc, _createdAt desc) {
     _id,
@@ -368,6 +370,7 @@ export const SERVICES_QUERY = defineQuery(`*[_type == "service"] | order(display
   "slug": slug.current,
   description,
   icon,
+  image{ alt, asset },
   seo { title, description }
 }`);
 

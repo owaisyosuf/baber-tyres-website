@@ -5,6 +5,7 @@ import { ServiceIcon } from "@/components/service/ServiceIcon";
 import { ServiceListSkeleton } from "@/components/skeleton/Skeletons";
 import { ShopVisitDetails } from "@/components/shop/ShopVisitDetails";
 import { Button, Container } from "@/components/ui";
+import { MediaOrIcon } from "@/components/ui/MediaOrIcon";
 import { getServices } from "@/lib/sanity/queries";
 import { getShopSettings } from "@/lib/sanity/settings";
 import { socialMetadata } from "@/lib/seo/metadata";
@@ -15,6 +16,9 @@ import {
   serviceInquiryMessage,
 } from "@/lib/whatsapp";
 import { rethrowDuringBuild } from "@/lib/build-phase";
+
+const IMAGE_WIDTH = 800;
+const IMAGE_HEIGHT = 600;
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getShopSettings();
@@ -72,20 +76,32 @@ async function Services() {
 
   return (
     <div className="flex flex-col gap-6">
-      {services.map((service) => (
+      {services.map((service, index) => (
         <section
           key={service._id}
           id={service.slug}
           aria-labelledby={`service-${service.slug}`}
-          className="flex flex-col gap-4 rounded-lg border border-border bg-surface p-6 sm:flex-row sm:gap-8 sm:p-10"
+          className="grid scroll-mt-20 overflow-hidden rounded-lg border border-border bg-surface md:grid-cols-5"
         >
-          <span
-            aria-hidden
-            className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg border border-border bg-background text-accent"
-          >
-            <ServiceIcon icon={service.icon} className="h-8 w-8" />
-          </span>
-          <div className="flex flex-col gap-3">
+          <MediaOrIcon
+            image={service.image}
+            width={IMAGE_WIDTH}
+            height={IMAGE_HEIGHT}
+            sizes="(min-width: 768px) 40vw, 100vw"
+            priority={index === 0}
+            className={[
+              "aspect-[16/10] md:col-span-2 md:aspect-auto md:h-full md:min-h-72",
+              index % 2 === 1 ? "md:order-last" : "",
+            ]
+              .filter(Boolean)
+              .join(" ")}
+            icon={<ServiceIcon icon={service.icon} className="h-8 w-8" />}
+          />
+          <div className="flex flex-col justify-center gap-3 p-6 sm:p-10 md:col-span-3">
+            <span className="flex items-center gap-2 text-label uppercase text-accent">
+              <ServiceIcon icon={service.icon} className="h-5 w-5" />
+              Service
+            </span>
             <h2 id={`service-${service.slug}`} className="text-h2">
               {service.name} in {settings.city}
             </h2>

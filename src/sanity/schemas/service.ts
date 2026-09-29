@@ -43,6 +43,26 @@ export const service = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "image",
+      title: "Photo",
+      type: "image",
+      description: "Optional. Shown with the service on the homepage and /services; the icon is used when blank.",
+      options: { hotspot: true },
+      fields: [
+        defineField({
+          name: "alt",
+          title: "Alt text",
+          type: "string",
+          validation: (Rule) =>
+            Rule.custom((alt, context) =>
+              (context.parent as { asset?: unknown } | undefined)?.asset && !alt
+                ? "Alt text is required when a photo is set."
+                : true,
+            ),
+        }),
+      ],
+    }),
+    defineField({
       name: "displayOrder",
       title: "Display order",
       type: "number",
@@ -54,6 +74,6 @@ export const service = defineType({
     }),
   ],
   preview: {
-    select: { title: "name", subtitle: "description" },
+    select: { title: "name", subtitle: "description", media: "image" },
   },
 });

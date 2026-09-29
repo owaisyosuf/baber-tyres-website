@@ -6,6 +6,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { ProductGrid } from "@/components/product";
 import { Unavailable } from "@/components/states/Unavailable";
 import { Breadcrumb, Button, Container } from "@/components/ui";
+import { MediaOrIcon } from "@/components/ui/MediaOrIcon";
 import {
   categoryHeading,
   categoryKeyword,
@@ -95,18 +96,31 @@ export default async function CategoryPage({ params }: PageProps<"/categories/[s
         )}
       />
 
-      <header className="mt-6 flex flex-col gap-4">
-        <span
-          aria-hidden
-          className="flex h-14 w-14 items-center justify-center rounded-lg border border-border bg-surface text-accent"
-        >
-          <CategoryIcon icon={category.icon} className="h-8 w-8" />
-        </span>
-        <h1 className="text-h1">{categoryHeading(category, settings.city)}</h1>
-        {category.description && (
-          <p className="max-w-[60ch] whitespace-pre-line text-body-lg text-muted">
-            {category.description}
-          </p>
+      <header className="mt-6 grid items-center gap-8 md:grid-cols-2">
+        <div className="flex flex-col gap-4">
+          <span
+            aria-hidden
+            className="flex h-14 w-14 items-center justify-center rounded-lg border border-border bg-surface text-accent"
+          >
+            <CategoryIcon icon={category.icon} className="h-8 w-8" />
+          </span>
+          <h1 className="text-h1">{categoryHeading(category, settings.city)}</h1>
+          {category.description && (
+            <p className="max-w-[60ch] whitespace-pre-line text-body-lg text-muted">
+              {category.description}
+            </p>
+          )}
+        </div>
+        {category.image?.asset && (
+          <MediaOrIcon
+            image={category.image}
+            width={800}
+            height={600}
+            sizes="(min-width: 768px) 50vw, 100vw"
+            priority
+            className="aspect-[4/3] rounded-lg border border-border"
+            icon={<CategoryIcon icon={category.icon} className="h-8 w-8" />}
+          />
         )}
       </header>
 

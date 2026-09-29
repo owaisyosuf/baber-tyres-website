@@ -75,9 +75,19 @@ describe("CategoryGrid", () => {
       expect(markup).toContain(`href="/categories/${slug}"`);
     }
     // One shared card class for all five: no category is styled as the main one.
-    const cards = markup.match(/<div class="[^"]*flex-col items-center[^"]*"/g) ?? [];
+    const cards = markup.match(/<div class="[^"]*group relative flex h-full flex-col[^"]*"/g) ?? [];
     expect(cards).toHaveLength(5);
     expect(new Set(cards).size).toBe(1);
+  });
+
+  it("shows a category's photo when set and its icon otherwise", async () => {
+    queries.getCategories.mockResolvedValue([
+      { ...five[0], image: { alt: "Car tyre", asset: { _ref: "image-abc123-800x600-jpg" } } },
+      five[1],
+    ]);
+    const markup = await render(CategoryGrid);
+    expect(markup.match(/<img /g)).toHaveLength(1);
+    expect(markup).toContain('alt="Car tyre"');
   });
 
   it("is left out when there are no categories or Sanity fails", async () => {

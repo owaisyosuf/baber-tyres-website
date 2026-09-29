@@ -42,6 +42,26 @@ export const category = defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: "image",
+      title: "Photo",
+      type: "image",
+      description: "Optional. Shown on the category card and page; the icon is used when blank.",
+      options: { hotspot: true },
+      fields: [
+        defineField({
+          name: "alt",
+          title: "Alt text",
+          type: "string",
+          validation: (Rule) =>
+            Rule.custom((alt, context) =>
+              (context.parent as { asset?: unknown } | undefined)?.asset && !alt
+                ? "Alt text is required when a photo is set."
+                : true,
+            ),
+        }),
+      ],
+    }),
+    defineField({
       name: "displayOrder",
       title: "Display order",
       type: "number",
@@ -53,6 +73,6 @@ export const category = defineType({
     }),
   ],
   preview: {
-    select: { title: "name", subtitle: "slug.current" },
+    select: { title: "name", subtitle: "slug.current", media: "image" },
   },
 });

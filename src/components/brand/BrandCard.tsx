@@ -22,15 +22,21 @@ export function BrandCard({ brand }: { brand: BrandCardBrand }) {
   const logoUrl = brand.logo ? sanityImageUrl(brand.logo, LOGO_WIDTH, LOGO_HEIGHT) : null;
 
   return (
-    <Card as="article" interactive className="relative flex h-full flex-col gap-4 p-4">
-      <div className="relative flex h-24 items-center justify-center overflow-hidden rounded-md bg-background">
+    <Card as="article" interactive className="group relative flex h-full flex-col gap-4 p-4">
+      {/* Most brand logos are drawn for light backgrounds, so they sit on a light plate. */}
+      <div
+        className={[
+          "relative flex h-24 items-center justify-center overflow-hidden rounded-md",
+          logoUrl ? "bg-text" : "bg-background",
+        ].join(" ")}
+      >
         {logoUrl ? (
           <Image
             src={logoUrl}
             alt={`${brand.name} logo`}
             width={LOGO_WIDTH}
             height={LOGO_HEIGHT}
-            className="h-full w-full object-contain p-3"
+            className="h-full w-full object-contain p-3 opacity-80 grayscale transition-[filter,opacity] duration-300 ease-out-soft group-hover:opacity-100 group-hover:grayscale-0 group-focus-within:opacity-100 group-focus-within:grayscale-0"
           />
         ) : (
           <span

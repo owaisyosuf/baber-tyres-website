@@ -44,6 +44,13 @@ export type Seo = {
   description?: string;
 };
 
+export type SanityImageAssetReference = {
+  _ref: string;
+  _type: "reference";
+  _weak?: boolean;
+  [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+};
+
 export type Service = {
   _id: string;
   _type: "service";
@@ -54,8 +61,32 @@ export type Service = {
   slug: Slug;
   description?: string;
   icon: "fitting" | "alignment" | "balancing";
+  image?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
   displayOrder?: number;
   seo?: Seo;
+};
+
+export type SanityImageCrop = {
+  _type: "sanity.imageCrop";
+  top: number;
+  bottom: number;
+  left: number;
+  right: number;
+};
+
+export type SanityImageHotspot = {
+  _type: "sanity.imageHotspot";
+  x: number;
+  y: number;
+  height: number;
+  width: number;
 };
 
 export type Slug = {
@@ -76,13 +107,6 @@ export type CategoryReference = {
   _type: "reference";
   _weak?: boolean;
   [internalGroqTypeReferenceTo]?: "category";
-};
-
-export type SanityImageAssetReference = {
-  _ref: string;
-  _type: "reference";
-  _weak?: boolean;
-  [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
 };
 
 export type Product = {
@@ -118,22 +142,6 @@ export type Product = {
   seo?: Seo;
 };
 
-export type SanityImageCrop = {
-  _type: "sanity.imageCrop";
-  top: number;
-  bottom: number;
-  left: number;
-  right: number;
-};
-
-export type SanityImageHotspot = {
-  _type: "sanity.imageHotspot";
-  x: number;
-  y: number;
-  height: number;
-  width: number;
-};
-
 export type Category = {
   _id: string;
   _type: "category";
@@ -144,6 +152,14 @@ export type Category = {
   slug: Slug;
   description?: string;
   icon: "car" | "suv" | "truck" | "forklift" | "offroad";
+  image?: {
+    asset?: SanityImageAssetReference;
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  };
   displayOrder?: number;
   seo?: Seo;
 };
@@ -266,7 +282,7 @@ export type Geopoint = {
   alt?: number;
 };
 
-export type AllSanitySchemaTypes = SiteSettings | Seo | Service | Slug | BrandReference | CategoryReference | SanityImageAssetReference | Product | SanityImageCrop | SanityImageHotspot | Category | Brand | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset | Geopoint;
+export type AllSanitySchemaTypes = SiteSettings | Seo | SanityImageAssetReference | Service | SanityImageCrop | SanityImageHotspot | Slug | BrandReference | CategoryReference | Product | Category | Brand | SanityImagePaletteSwatch | SanityImagePalette | SanityImageDimensions | SanityImageMetadata | SanityFileAsset | SanityAssetSourceData | SanityImageAsset | Geopoint;
 
 // Source: src/lib/sanity/queries.ts
 // Variable: HOMEPAGE_QUERY
@@ -526,23 +542,31 @@ export type BRAND_BY_SLUG_RESULT = {
 
 // Source: src/lib/sanity/queries.ts
 // Variable: CATEGORIES_QUERY
-// Query: *[_type == "category"] | order(displayOrder asc) {  _id,  name,  "slug": slug.current,  icon}
+// Query: *[_type == "category"] | order(displayOrder asc) {  _id,  name,  "slug": slug.current,  icon,  image{ alt, asset }}
 export type CATEGORIES_QUERY_RESULT = Array<{
   _id: string;
   name: string;
   slug: string;
   icon: "car" | "forklift" | "offroad" | "suv" | "truck";
+  image: {
+    alt: string | null;
+    asset: SanityImageAssetReference | null;
+  } | null;
 }>;
 
 // Source: src/lib/sanity/queries.ts
 // Variable: CATEGORY_BY_SLUG
-// Query: *[_type == "category" && slug.current == $slug][0]{  _id,  name,  "slug": slug.current,  description,  icon,  seo { title, description },  "products": *[_type == "product" && references(^._id)] | order(featured desc, _createdAt desc) {    _id,    name,    "slug": slug.current,    price,    inStock,    sizeLabelOverride,    treadPattern,    width,    profile,    rim,    images[]{ alt, asset },    brand->{ name, "slug": slug.current, relationship }  }}
+// Query: *[_type == "category" && slug.current == $slug][0]{  _id,  name,  "slug": slug.current,  description,  icon,  image{ alt, asset },  seo { title, description },  "products": *[_type == "product" && references(^._id)] | order(featured desc, _createdAt desc) {    _id,    name,    "slug": slug.current,    price,    inStock,    sizeLabelOverride,    treadPattern,    width,    profile,    rim,    images[]{ alt, asset },    brand->{ name, "slug": slug.current, relationship }  }}
 export type CATEGORY_BY_SLUG_RESULT = {
   _id: string;
   name: string;
   slug: string;
   description: string | null;
   icon: "car" | "forklift" | "offroad" | "suv" | "truck";
+  image: {
+    alt: string | null;
+    asset: SanityImageAssetReference | null;
+  } | null;
   seo: {
     title: string | null;
     description: string | null;
@@ -572,13 +596,17 @@ export type CATEGORY_BY_SLUG_RESULT = {
 
 // Source: src/lib/sanity/queries.ts
 // Variable: SERVICES_QUERY
-// Query: *[_type == "service"] | order(displayOrder asc) {  _id,  name,  "slug": slug.current,  description,  icon,  seo { title, description }}
+// Query: *[_type == "service"] | order(displayOrder asc) {  _id,  name,  "slug": slug.current,  description,  icon,  image{ alt, asset },  seo { title, description }}
 export type SERVICES_QUERY_RESULT = Array<{
   _id: string;
   name: string;
   slug: string;
   description: string | null;
   icon: "alignment" | "balancing" | "fitting";
+  image: {
+    alt: string | null;
+    asset: SanityImageAssetReference | null;
+  } | null;
   seo: {
     title: string | null;
     description: string | null;
@@ -643,9 +671,9 @@ declare global {
     "*[\n  _type == \"product\"\n  && slug.current != $slug\n  && (brand._ref == $brandId || category._ref == $categoryId)\n] | order((brand._ref == $brandId) desc, _createdAt desc) [0...4] {\n  _id,\n  name,\n  \"slug\": slug.current,\n  price,\n  inStock,\n  sizeLabelOverride,\n  treadPattern,\n  width,\n  profile,\n  rim,\n  images[]{ alt, asset },\n  brand->{ name, \"slug\": slug.current, relationship }\n}": RELATED_PRODUCTS_QUERY_RESULT;
     "*[_type == \"brand\"] | order(select(relationship == \"importer\" => 0, relationship == \"dealer\" => 1, 2) asc, displayOrder asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  relationship,\n  logo,\n  description\n}": BRANDS_QUERY_RESULT;
     "*[_type == \"brand\" && slug.current == $slug][0]{\n  _id,\n  name,\n  \"slug\": slug.current,\n  relationship,\n  logo,\n  description,\n  seo { title, description },\n  \"products\": *[_type == \"product\" && references(^._id)] | order(featured desc, _createdAt desc) {\n    _id,\n    name,\n    \"slug\": slug.current,\n    price,\n    inStock,\n    sizeLabelOverride,\n    treadPattern,\n    width,\n    profile,\n    rim,\n    images[]{ alt, asset },\n    brand->{ name, \"slug\": slug.current, relationship }\n  }\n}": BRAND_BY_SLUG_RESULT;
-    "*[_type == \"category\"] | order(displayOrder asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  icon\n}": CATEGORIES_QUERY_RESULT;
-    "*[_type == \"category\" && slug.current == $slug][0]{\n  _id,\n  name,\n  \"slug\": slug.current,\n  description,\n  icon,\n  seo { title, description },\n  \"products\": *[_type == \"product\" && references(^._id)] | order(featured desc, _createdAt desc) {\n    _id,\n    name,\n    \"slug\": slug.current,\n    price,\n    inStock,\n    sizeLabelOverride,\n    treadPattern,\n    width,\n    profile,\n    rim,\n    images[]{ alt, asset },\n    brand->{ name, \"slug\": slug.current, relationship }\n  }\n}": CATEGORY_BY_SLUG_RESULT;
-    "*[_type == \"service\"] | order(displayOrder asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  description,\n  icon,\n  seo { title, description }\n}": SERVICES_QUERY_RESULT;
+    "*[_type == \"category\"] | order(displayOrder asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  icon,\n  image{ alt, asset }\n}": CATEGORIES_QUERY_RESULT;
+    "*[_type == \"category\" && slug.current == $slug][0]{\n  _id,\n  name,\n  \"slug\": slug.current,\n  description,\n  icon,\n  image{ alt, asset },\n  seo { title, description },\n  \"products\": *[_type == \"product\" && references(^._id)] | order(featured desc, _createdAt desc) {\n    _id,\n    name,\n    \"slug\": slug.current,\n    price,\n    inStock,\n    sizeLabelOverride,\n    treadPattern,\n    width,\n    profile,\n    rim,\n    images[]{ alt, asset },\n    brand->{ name, \"slug\": slug.current, relationship }\n  }\n}": CATEGORY_BY_SLUG_RESULT;
+    "*[_type == \"service\"] | order(displayOrder asc) {\n  _id,\n  name,\n  \"slug\": slug.current,\n  description,\n  icon,\n  image{ alt, asset },\n  seo { title, description }\n}": SERVICES_QUERY_RESULT;
     "*[_type == \"siteSettings\"][0]{\n  shopName,\n  addressLine,\n  city,\n  phone,\n  whatsapp,\n  hoursOpen,\n  hoursClose,\n  openDays,\n  closedDay,\n  deliveryNote,\n  mapLat,\n  mapLng,\n  mapEmbedUrl,\n  googleReviewUrl,\n  defaultSeo { title, description }\n}": SETTINGS_QUERY_RESULT;
     "{\n  \"products\": *[_type == \"product\"]{ \"slug\": slug.current, _updatedAt },\n  \"brands\": *[_type == \"brand\"]{ \"slug\": slug.current, _updatedAt },\n  \"categories\": *[_type == \"category\"]{ \"slug\": slug.current, _updatedAt },\n  \"services\": *[_type == \"service\"]{ \"slug\": slug.current, _updatedAt }\n}": SITEMAP_QUERY_RESULT;
   }

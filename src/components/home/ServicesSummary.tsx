@@ -2,8 +2,12 @@ import Link from "next/link";
 import { Reveal } from "@/components/motion/Reveal";
 import { ServiceIcon } from "@/components/service/ServiceIcon";
 import { Card, Section } from "@/components/ui";
+import { MediaOrIcon } from "@/components/ui/MediaOrIcon";
 import { getServices } from "@/lib/sanity/queries";
 import { rethrowDuringBuild } from "@/lib/build-phase";
+
+const IMAGE_WIDTH = 640;
+const IMAGE_HEIGHT = 400;
 
 /**
  * Services summary — FR-A5. The services as Sanity lists them, each linking to
@@ -36,25 +40,30 @@ export async function ServicesSummary() {
               <Card
                 as="div"
                 interactive
-                className="relative flex h-full flex-col gap-3 p-6"
+                className="group relative flex h-full flex-col overflow-hidden"
               >
-                <span
-                  aria-hidden
-                  className="flex h-14 w-14 items-center justify-center rounded-lg border border-border bg-background text-accent"
-                >
-                  <ServiceIcon icon={service.icon} className="h-8 w-8" />
-                </span>
-                <h3 className="text-body font-semibold text-text">
-                  <Link
-                    href={`/services#${service.slug}`}
-                    className="outline-none after:absolute after:inset-0 after:rounded-lg focus-visible:after:outline-2 focus-visible:after:-outline-offset-2 focus-visible:after:outline-accent"
-                  >
-                    {service.name}
-                  </Link>
-                </h3>
-                {service.description && (
-                  <p className="line-clamp-3 text-small text-muted">{service.description}</p>
-                )}
+                <MediaOrIcon
+                  image={service.image}
+                  width={IMAGE_WIDTH}
+                  height={IMAGE_HEIGHT}
+                  sizes="(min-width: 768px) 33vw, 100vw"
+                  className="aspect-[16/10]"
+                  icon={<ServiceIcon icon={service.icon} className="h-8 w-8" />}
+                />
+                <div className="flex flex-1 flex-col gap-3 p-6">
+                  <h3 className="flex items-center gap-2 text-body font-semibold text-text">
+                    <ServiceIcon icon={service.icon} className="h-5 w-5 shrink-0 text-accent" />
+                    <Link
+                      href={`/services#${service.slug}`}
+                      className="outline-none after:absolute after:inset-0 after:rounded-lg focus-visible:after:outline-2 focus-visible:after:-outline-offset-2 focus-visible:after:outline-accent"
+                    >
+                      {service.name}
+                    </Link>
+                  </h3>
+                  {service.description && (
+                    <p className="line-clamp-3 text-small text-muted">{service.description}</p>
+                  )}
+                </div>
               </Card>
             </Reveal>
           </li>

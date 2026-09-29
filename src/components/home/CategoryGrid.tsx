@@ -2,8 +2,12 @@ import Link from "next/link";
 import { CategoryIcon } from "@/components/category/CategoryIcon";
 import { Reveal } from "@/components/motion/Reveal";
 import { Card, Section } from "@/components/ui";
+import { MediaOrIcon } from "@/components/ui/MediaOrIcon";
 import { getCategories } from "@/lib/sanity/queries";
 import { rethrowDuringBuild } from "@/lib/build-phase";
+
+const IMAGE_WIDTH = 480;
+const IMAGE_HEIGHT = 360;
 
 /**
  * Vehicle category entry points — FR-A4. Every category is the same card at
@@ -41,20 +45,25 @@ export async function CategoryGrid() {
               <Card
                 as="div"
                 interactive
-                className="relative flex h-full flex-col items-center gap-3 p-6 text-center"
+                className="group relative flex h-full flex-col overflow-hidden"
               >
-                <span
-                  aria-hidden
-                  className="flex h-14 w-14 items-center justify-center rounded-lg border border-border bg-background text-accent"
-                >
-                  <CategoryIcon icon={category.icon} className="h-8 w-8" />
-                </span>
-                <Link
-                  href={`/categories/${category.slug}`}
-                  className="text-body font-semibold text-text outline-none after:absolute after:inset-0 after:rounded-lg focus-visible:after:outline-2 focus-visible:after:-outline-offset-2 focus-visible:after:outline-accent"
-                >
-                  {category.name}
-                </Link>
+                <MediaOrIcon
+                  image={category.image}
+                  width={IMAGE_WIDTH}
+                  height={IMAGE_HEIGHT}
+                  sizes="(min-width: 1024px) 20vw, (min-width: 640px) 33vw, 50vw"
+                  className="aspect-[4/3]"
+                  icon={<CategoryIcon icon={category.icon} className="h-10 w-10" />}
+                />
+                <div className="flex items-center gap-2 p-4">
+                  <CategoryIcon icon={category.icon} className="h-5 w-5 shrink-0 text-accent" />
+                  <Link
+                    href={`/categories/${category.slug}`}
+                    className="text-body font-semibold text-text outline-none after:absolute after:inset-0 after:rounded-lg focus-visible:after:outline-2 focus-visible:after:-outline-offset-2 focus-visible:after:outline-accent"
+                  >
+                    {category.name}
+                  </Link>
+                </div>
               </Card>
             </Reveal>
           </li>
