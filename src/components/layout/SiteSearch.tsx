@@ -70,16 +70,18 @@ export function SiteSearch({ size = "full", onSubmit, className }: SiteSearchPro
   const suggestions = ready ? state.suggestions : [];
   const whatsappHref = ready ? state.whatsappHref : "";
   const showList = open && ready;
-  const noMatches = showList && suggestions.length === 0;
-  // The WhatsApp row is the only option when nothing matches.
-  const optionCount = noMatches ? 1 : suggestions.length;
+  // No product listed for what was typed (even if a size or brand row matched):
+  // a WhatsApp row closes the list, so a size that is not online is still a lead.
+  const noProducts = !suggestions.some((suggestion) => suggestion.kind === "product");
+  const whatsappIndex = noProducts ? suggestions.length : -1;
+  const optionCount = suggestions.length + (noProducts ? 1 : 0);
 
   const optionId = (index: number) => `${listId}-option-${index}`;
 
   const go = (index: number) => {
     setOpen(false);
     onSubmit?.();
-    if (noMatches) {
+    if (index === whatsappIndex) {
       window.open(whatsappHref, "_blank", "noopener,noreferrer");
       return;
     }
@@ -107,8 +109,8 @@ export function SiteSearch({ size = "full", onSubmit, className }: SiteSearchPro
 
   const status = !showList
     ? ""
-    : noMatches
-      ? `No matches for ${query}. You can ask on WhatsApp.`
+    : noProducts
+      ? `No tyres listed for ${query}. You can ask on WhatsApp.`
       : `${suggestions.length} suggestion${suggestions.length === 1 ? "" : "s"}`;
 
   return (
@@ -174,44 +176,45 @@ export function SiteSearch({ size = "full", onSubmit, className }: SiteSearchPro
           compact ? "w-96" : "right-0",
         ].join(" ")}
       >
-        {noMatches ? (
+        {suggestions.map((suggestion, index) => (
           <li
-            id={optionId(0)}
+            key={`${suggestion.kind}-${suggestion.href}`}
+            id={optionId(index)}
             role="option"
-            aria-selected={active === 0}
-            onClick={() => go(0)}
+            aria-selected={active === index}
+            onClick={() => go(index)}
+            onMouseEnter={() => setActive(index)}
             className={[
-              "flex cursor-pointer flex-col gap-1 px-4 py-3",
-              active === 0 ? "bg-surface-raised" : "",
+              "flex cursor-pointer items-center justify-between gap-4 px-4 py-2.5",
+              active === index ? "bg-surface-raised" : "",
+              suggestion.kind === "all" ? "border-t border-border text-accent" : "text-text",
             ].join(" ")}
           >
-            <span className="text-small text-muted">No tyres found for “{query}”</span>
+            <span className="truncate text-body">{suggestion.label}</span>
+            {suggestion.detail && (
+              <span className="shrink-0 text-small text-muted">{suggestion.detail}</span>
+            )}
+          </li>
+        ))}
+        {noProducts && (
+          <li
+            id={optionId(whatsappIndex)}
+            role="option"
+            aria-selected={active === whatsappIndex}
+            onClick={() => go(whatsappIndex)}
+            onMouseEnter={() => setActive(whatsappIndex)}
+            className={[
+              "flex cursor-pointer flex-col gap-1 px-4 py-3",
+              suggestions.length > 0 ? "border-t border-border" : "",
+              active === whatsappIndex ? "bg-surface-raised" : "",
+            ].join(" ")}
+          >
+            <span className="text-small text-muted">No tyres listed online for “{query}”</span>
             <span className="flex items-center gap-2 text-body font-semibold text-accent">
               <WhatsAppIcon size={18} />
               Ask on WhatsApp
             </span>
           </li>
-        ) : (
-          suggestions.map((suggestion, index) => (
-            <li
-              key={`${suggestion.kind}-${suggestion.href}`}
-              id={optionId(index)}
-              role="option"
-              aria-selected={active === index}
-              onClick={() => go(index)}
-              onMouseEnter={() => setActive(index)}
-              className={[
-                "flex cursor-pointer items-center justify-between gap-4 px-4 py-2.5",
-                active === index ? "bg-surface-raised" : "",
-                suggestion.kind === "all" ? "border-t border-border text-accent" : "text-text",
-              ].join(" ")}
-            >
-              <span className="truncate text-body">{suggestion.label}</span>
-              {suggestion.detail && (
-                <span className="shrink-0 text-small text-muted">{suggestion.detail}</span>
-              )}
-            </li>
-          ))
         )}
       </ul>
       <span role="status" className="sr-only">

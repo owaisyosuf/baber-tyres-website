@@ -21,17 +21,19 @@ interface PageHeroProps {
  */
 export function PageHero({ eyebrow, title, intro, breadcrumb, children }: PageHeroProps) {
   return (
-    <div className="relative overflow-hidden border-b border-border">
-      <RadialGlow />
-      <div
-        aria-hidden
-        className="absolute inset-0 text-border-strong opacity-30"
-        style={{
-          maskImage: "linear-gradient(to bottom, black 0%, transparent 90%)",
-          WebkitMaskImage: "linear-gradient(to bottom, black 0%, transparent 90%)",
-        }}
-      >
-        <TreadMotif className="h-full w-full" />
+    <div className="relative border-b border-border">
+      {/* Only the backdrop is clipped, so a dropdown in the actions (the catalog search) can hang below the banner. */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+        <RadialGlow />
+        <div
+          className="absolute inset-0 text-border-strong opacity-30"
+          style={{
+            maskImage: "linear-gradient(to bottom, black 0%, transparent 90%)",
+            WebkitMaskImage: "linear-gradient(to bottom, black 0%, transparent 90%)",
+          }}
+        >
+          <TreadMotif className="h-full w-full" />
+        </div>
       </div>
 
       <Container className="relative py-10 md:py-16">
