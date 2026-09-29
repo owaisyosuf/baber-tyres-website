@@ -1,23 +1,25 @@
 import { Container, Section } from "@/components/ui";
-import { getFilterOptions } from "@/lib/sanity/queries";
+import { getCategories } from "@/lib/sanity/queries";
+import { STANDARD_TYRE_SIZES } from "@/lib/tyre-sizes";
 import { SizeFinderForm } from "./SizeFinderForm";
 import { rethrowDuringBuild } from "@/lib/build-phase";
 
 /**
- * Homepage size finder — FR-A2. The options are the sizes that exist among
- * published products, so the selects never offer a size nobody stocks. If
- * Sanity cannot be reached the section is left out; the hero's Browse Tyres
- * button still leads to the catalog.
+ * Homepage size finder — FR-A2. The size selects offer the standard metric
+ * sizes rather than only the ones listed online, because the shop stocks far
+ * more than it lists; a size with no listing lands on the catalog's empty
+ * state, which offers WhatsApp. Vehicle types come from Sanity; if Sanity
+ * cannot be reached that select is simply left out.
  */
 export async function SizeFinder() {
-  let options;
+  let categories: { name: string; slug: string }[] = [];
   try {
-    options = await getFilterOptions();
+    categories = await getCategories();
   } catch (error) {
     rethrowDuringBuild(error);
-    console.error("Filter options unavailable for the size finder:", error);
-    return null;
+    console.error("Categories unavailable for the size finder:", error);
   }
+  const options = { categories, ...STANDARD_TYRE_SIZES };
 
   return (
     <Section as="div">
