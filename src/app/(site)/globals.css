@@ -119,14 +119,18 @@
   /* Display headings carry the homepage hero's warm white-to-amber gradient.
      Small uppercase labels (footer columns, group labels) stay plain. The
      heading is only as wide as its text, so the whole gradient shows on it. */
-  :where(h1, h2, h3.text-h3):not(.text-label) {
-    width: fit-content;
-    background-image: linear-gradient(
+  :root {
+    --gradient-heading: linear-gradient(
       to right,
       color-mix(in srgb, var(--color-text), var(--color-accent-glow) 22%),
       var(--color-accent-glow) 70%,
       var(--color-accent)
     );
+  }
+
+  :where(h1, h2, h3.text-h3):not(.text-label) {
+    width: fit-content;
+    background-image: var(--gradient-heading);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -160,6 +164,16 @@
   .tabular {
     font-variant-numeric: tabular-nums;
   }
+}
+
+/* The heading gradient for text that is not a display heading: the header
+   wordmark, the footer's shop name and column labels. */
+@utility text-gradient {
+  width: fit-content;
+  background-image: var(--gradient-heading);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 /* Scroll reveal (design.md §7.6): fade + 16px rise, 400ms, once. <Reveal> only

@@ -23,7 +23,7 @@ export function Header() {
         <Link
           href="/"
           aria-label={`${siteConfig.shopName} — home`}
-          className="font-display text-lg font-bold tracking-tight text-text"
+          className="font-display text-lg font-bold tracking-tight text-gradient"
         >
           {siteConfig.shopName}
         </Link>

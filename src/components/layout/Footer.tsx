@@ -12,7 +12,7 @@ import { rethrowDuringBuild } from "@/lib/build-phase";
 /** The footer lists a handful of brands; the full set lives on /brands. */
 const FOOTER_BRAND_LIMIT = 8;
 
-const headingClassName = "mb-2 text-label uppercase text-muted";
+const headingClassName = "mb-2 text-label uppercase text-gradient";
 // Links sit side by side and wrap, so the lists stay short; each keeps a 44px-tall target.
 const linkListClassName = "flex flex-wrap gap-x-4";
 const linkClassName =
@@ -55,7 +55,7 @@ export async function Footer() {
       <Container className="py-8">
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <p className="font-display text-lg font-bold tracking-tight text-text">
+            <p className="font-display text-lg font-bold tracking-tight text-gradient">
               {settings.shopName}
             </p>
             <p className="mt-1 text-small text-muted">{siteConfig.tagline}</p>
