@@ -19,9 +19,12 @@ const elevationClasses: Record<CardElevation, string> = {
   accent: "bg-surface border border-accent shadow-glow-strong",
 };
 
-const interactiveClasses =
-  "transition-[border-color,box-shadow,background-color] duration-300 ease-out-soft " +
-  "hover:bg-surface-raised hover:border-border-strong hover:shadow-glow";
+// Lifts 4px with a stronger amber glow and a warmer border; the lift is
+// dropped under reduced motion, the colour change stays.
+export const interactiveCardClasses =
+  "transition-[border-color,box-shadow,background-color,translate] duration-300 ease-out-soft " +
+  "hover:-translate-y-1 hover:bg-surface-raised hover:border-accent/50 hover:shadow-glow-strong " +
+  "focus-within:border-accent/50 focus-within:shadow-glow-strong motion-reduce:hover:translate-y-0";
 
 export function Card({
   elevation = "raised",
@@ -35,7 +38,7 @@ export function Card({
       className={[
         "rounded-lg",
         elevationClasses[elevation],
-        interactive ? interactiveClasses : "",
+        interactive ? interactiveCardClasses : "",
         className,
       ]
         .filter(Boolean)

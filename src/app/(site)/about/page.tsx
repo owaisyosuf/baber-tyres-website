@@ -6,7 +6,14 @@ import { Reveal } from "@/components/motion/Reveal";
 import { ServicesSummary } from "@/components/home/ServicesSummary";
 import { HowToBuy } from "@/components/shop/HowToBuy";
 import { ShopVisitDetails } from "@/components/shop/ShopVisitDetails";
-import { Button, Card, CtaBanner, PageHero, Section } from "@/components/ui";
+import {
+  Button,
+  Card,
+  CtaBanner,
+  interactiveCardClasses,
+  PageHero,
+  Section,
+} from "@/components/ui";
 import { RELATIONSHIP_GROUPS } from "@/lib/brand";
 import { formatPhoneDisplay } from "@/lib/format";
 import { getBrands } from "@/lib/sanity/queries";
@@ -56,7 +63,7 @@ async function BrandGroups() {
         <Reveal key={group.relationship} index={index} className="h-full">
           <section
             aria-labelledby={`about-${group.relationship}`}
-            className="flex h-full flex-col gap-6 rounded-lg border border-border bg-surface p-6 sm:p-8"
+            className={`flex h-full flex-col gap-6 rounded-lg border border-border bg-surface p-6 sm:p-8 ${interactiveCardClasses}`}
           >
             <div>
               <h3 id={`about-${group.relationship}`} className="text-h3">

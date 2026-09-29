@@ -3,7 +3,13 @@ import type { ReactNode } from "react";
 import { LocationIcon, PhoneIcon, WhatsAppIcon } from "@/components/icons";
 import { ShopMap } from "@/components/shop/ShopMap";
 import { ShopVisitDetails } from "@/components/shop/ShopVisitDetails";
-import { Button, Container, CtaBanner, PageHero } from "@/components/ui";
+import {
+  Button,
+  Container,
+  CtaBanner,
+  interactiveCardClasses,
+  PageHero,
+} from "@/components/ui";
 import { formatPhoneDisplay } from "@/lib/format";
 import { mapsDirectionsUrl } from "@/lib/maps";
 import { getShopSettings } from "@/lib/sanity/settings";
@@ -48,6 +54,7 @@ function ContactCard({
       aria-labelledby={id}
       className={[
         "flex h-full flex-col gap-4 rounded-lg border bg-surface p-6 sm:p-8",
+        interactiveCardClasses,
         highlight ? "border-accent shadow-glow" : "border-border",
       ].join(" ")}
     >

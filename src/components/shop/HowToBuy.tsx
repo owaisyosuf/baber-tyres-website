@@ -40,7 +40,7 @@ export function HowToBuy({ deliveryNote, headingLevel: Heading = "h2" }: {
       {steps.map((step, index) => (
         <li key={step.title}>
           <Reveal index={index} className="h-full">
-            <Card className="flex h-full flex-col gap-4 p-6">
+            <Card interactive className="flex h-full flex-col gap-4 p-6">
               <div className="flex items-center justify-between">
                 <span
                   aria-hidden

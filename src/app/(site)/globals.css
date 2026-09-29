@@ -116,6 +116,22 @@
     text-wrap: balance;
   }
 
+  /* Display headings carry the homepage hero's warm white-to-amber gradient.
+     Small uppercase labels (footer columns, group labels) stay plain. The
+     heading is only as wide as its text, so the whole gradient shows on it. */
+  :where(h1, h2, h3.text-h3):not(.text-label) {
+    width: fit-content;
+    background-image: linear-gradient(
+      to right,
+      color-mix(in srgb, var(--color-text), var(--color-accent-glow) 22%),
+      var(--color-accent-glow) 70%,
+      var(--color-accent)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
   /* Focus is never removed — Constitution §VI */
   :focus-visible {
     outline: 2px solid var(--color-accent);

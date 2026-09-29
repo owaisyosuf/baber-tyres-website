@@ -4,7 +4,7 @@ export { Badge } from "./Badge";
 export type { BadgeVariant } from "./Badge";
 export { Breadcrumb } from "./Breadcrumb";
 export type { BreadcrumbItem } from "./Breadcrumb";
-export { Card } from "./Card";
+export { Card, interactiveCardClasses } from "./Card";
 export { Container } from "./Container";
 export { CtaBanner } from "./CtaBanner";
 export { Section } from "./Section";
