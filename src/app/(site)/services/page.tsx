@@ -4,7 +4,7 @@ import { WhatsAppIcon } from "@/components/icons";
 import { ServiceIcon } from "@/components/service/ServiceIcon";
 import { ServiceListSkeleton } from "@/components/skeleton/Skeletons";
 import { ShopVisitDetails } from "@/components/shop/ShopVisitDetails";
-import { Button, Container } from "@/components/ui";
+import { Button, Container, PageHero } from "@/components/ui";
 import { MediaOrIcon } from "@/components/ui/MediaOrIcon";
 import { getServices } from "@/lib/sanity/queries";
 import { getShopSettings } from "@/lib/sanity/settings";
@@ -165,18 +165,35 @@ async function DeliveryAndLocation() {
   );
 }
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const settings = await getShopSettings();
+
   return (
-    <Container className="py-8 md:py-12">
-      <h1 className="text-h1">Services</h1>
-      <p className="mt-3 mb-8 max-w-[60ch] text-body-lg text-muted">
-        Fitting, computerized alignment and computerized balancing at our shop. Message us on
-        WhatsApp to check timing or ask a question.
-      </p>
-      <Suspense fallback={<ServiceListSkeleton />}>
-        <Services />
-        <DeliveryAndLocation />
-      </Suspense>
-    </Container>
+    <>
+      <PageHero
+        eyebrow="Services"
+        title="Fitting, alignment and balancing"
+        intro="Once your tyres are chosen, we fit them at our shop with computerized alignment and balancing. Message us on WhatsApp to check timing or ask a question."
+        breadcrumb={[{ label: "Services" }]}
+      >
+        <Button
+          href={buildWhatsAppLink(genericInquiryMessage(), settings.whatsappE164)}
+          variant="whatsapp"
+          icon={<WhatsAppIcon />}
+          aria-label="Chat with us on WhatsApp"
+        >
+          WhatsApp
+        </Button>
+        <Button href="/tyres" variant="secondary">
+          Browse tyres
+        </Button>
+      </PageHero>
+      <Container className="py-12 md:py-20">
+        <Suspense fallback={<ServiceListSkeleton />}>
+          <Services />
+          <DeliveryAndLocation />
+        </Suspense>
+      </Container>
+    </>
   );
 }

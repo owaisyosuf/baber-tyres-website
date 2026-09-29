@@ -5,7 +5,7 @@ import { CatalogView } from "@/components/catalog/CatalogView";
 import { WhatsAppIcon } from "@/components/icons";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { CatalogSkeleton } from "@/components/skeleton/Skeletons";
-import { Button, Container } from "@/components/ui";
+import { Button, Container, PageHero } from "@/components/ui";
 import { CATALOG_PATH, catalogHref, parseCatalogSearchParams } from "@/lib/filters";
 import { getFilterOptions, getProducts } from "@/lib/sanity/queries";
 import { getShopSettings } from "@/lib/sanity/settings";
@@ -90,7 +90,7 @@ async function Catalog({ searchParams }: { searchParams: SearchParams }) {
 
 export default function TyresPage({ searchParams }: { searchParams: SearchParams }) {
   return (
-    <Container className="py-8 md:py-12">
+    <>
       <JsonLd
         data={buildBreadcrumbJsonLd(
           [
@@ -100,14 +100,17 @@ export default function TyresPage({ searchParams }: { searchParams: SearchParams
           siteUrl,
         )}
       />
-      <h1 className="text-h1">Tyres</h1>
-      <p className="mt-3 mb-8 max-w-[60ch] text-body-lg text-muted">
-        Car, SUV, truck, forklift and off-road tyres. Filter by brand, size or price — or message
-        us and we will find your size.
-      </p>
-      <Suspense fallback={<CatalogSkeleton />}>
-        <Catalog searchParams={searchParams} />
-      </Suspense>
-    </Container>
+      <PageHero
+        eyebrow="Tyre catalog"
+        title="Tyres"
+        intro="Car, SUV, truck, forklift and off-road tyres. Filter by brand, size or price — or message us and we will find your size."
+        breadcrumb={[{ label: "Tyres" }]}
+      />
+      <Container className="py-8 md:py-12">
+        <Suspense fallback={<CatalogSkeleton />}>
+          <Catalog searchParams={searchParams} />
+        </Suspense>
+      </Container>
+    </>
   );
 }

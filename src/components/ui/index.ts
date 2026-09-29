@@ -6,6 +6,8 @@ export { Breadcrumb } from "./Breadcrumb";
 export type { BreadcrumbItem } from "./Breadcrumb";
 export { Card } from "./Card";
 export { Container } from "./Container";
+export { CtaBanner } from "./CtaBanner";
 export { Section } from "./Section";
 export { Heading } from "./Heading";
+export { PageHero } from "./PageHero";
 export { Skeleton } from "./Skeleton";
