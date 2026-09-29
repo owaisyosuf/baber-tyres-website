@@ -19,7 +19,7 @@ const LOGO_HEIGHT = 120;
  * is uploaded, NFR-12), the relationship badge, and a link to the brand page.
  */
 export function BrandCard({ brand }: { brand: BrandCardBrand }) {
-  const logoUrl = brand.logo ? sanityImageUrl(brand.logo, LOGO_WIDTH, LOGO_HEIGHT) : null;
+  const logoUrl = brand.logo ? sanityImageUrl(brand.logo, LOGO_WIDTH, LOGO_HEIGHT, "max") : null;
 
   return (
     <Card as="article" interactive className="group relative flex h-full flex-col gap-4 p-4">

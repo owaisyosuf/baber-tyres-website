@@ -218,6 +218,13 @@ describe("sanityImageUrl", () => {
     expect(url).toContain("auto=format");
   });
 
+  it("keeps the whole image for logos with fit=max", () => {
+    const url = sanityImageUrl({ asset: { _ref: "image-abc123def456-1600x431-png" } }, 240, 120, "max");
+    expect(url).toContain("fit=max");
+    expect(url).not.toContain("fit=crop");
+    expect(url).not.toContain("rect=");
+  });
+
   it("returns null when the image has no asset", () => {
     expect(sanityImageUrl({ asset: null }, 640, 480)).toBeNull();
   });

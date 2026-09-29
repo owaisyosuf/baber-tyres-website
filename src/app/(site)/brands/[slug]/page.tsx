@@ -56,7 +56,7 @@ export async function generateMetadata({
   const title = brand.seo?.title || brandPageTitle(brand, settings.city);
   const description =
     brand.seo?.description || brandPageDescription(settings.shopName, brand, settings.city);
-  const logoUrl = brand.logo ? sanityImageUrl(brand.logo, 1200, 630) : null;
+  const logoUrl = brand.logo ? sanityImageUrl(brand.logo, 1200, 630, "max") : null;
   const canonical = `/brands/${brand.slug}`;
 
   return {
@@ -86,7 +86,7 @@ export default async function BrandPage({ params }: PageProps<"/brands/[slug]">)
   if (!brand) notFound();
 
   const settings = await getShopSettings();
-  const logoUrl = brand.logo ? sanityImageUrl(brand.logo, LOGO_WIDTH, LOGO_HEIGHT) : null;
+  const logoUrl = brand.logo ? sanityImageUrl(brand.logo, LOGO_WIDTH, LOGO_HEIGHT, "max") : null;
   const whatsappHref = buildWhatsAppLink(brandInquiryMessage(brand.name), settings.whatsappE164);
 
   return (
