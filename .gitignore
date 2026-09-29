@@ -41,3 +41,8 @@ Thumbs.db
 
 # vercel
 .vercel
+
+# owner's business spreadsheets (stock, prices) and Excel lock files
+*.xlsx
+*.xls
+~$*
