@@ -84,7 +84,13 @@ sakte hain). `*.xlsx` gitignored hai.
     (slug/URL wahi `rapid-ecoterra-265-65-r17`).
   - `31x10.50 R15` → width/profile/rim 265/75/15 + size override; `205R16C` → 205/80/16 + override,
     owner ke kehne par **Truck / Commercial** category mein.
-- **Search fixes (2026-10-08, push baqi tha):** search ab "265.60R18" (dot) samajhta hai, aur
+- **Rapid LT import (2026-10-08):** `RAPID LT.xlsx` se **15 products published**, sab
+  **Truck / Commercial**, sab par NIL.jpg (owner ka faisla). Rapid ab 135 products.
+  - Pattern (owner): EFI VAN / EFFIVAN / EFIVAN / "EFIVAN/THREE A" → `EFFIVAN`; EFI TRAC → `EFFITRAC`.
+  - Size label: `155R13C`, `205R14`, `165/70 R13C` waghera (C sirf jahan sheet mein tha);
+    `215/75 R16` par override nahi. Ply rating description mein ("8 ply rating.").
+  - ID `product-rapid-<pattern>-<label-slug>` (jaise `product-rapid-effivan-155r13c`).
+- **Search fixes (2026-10-08):** search ab "265.60R18" (dot) samajhta hai, aur
   products ke `sizeLabelOverride` (31x10.50 R15, 205R16C, 11R22.5…) har tarah likhne par dhoond
   leta hai ("31.10.50R15", "31x10.5R15", "11/22.5", "700-12"). Home "Find your tyre size" mein
   sirf Car + SUV / 4x4; neeche truck/LT/forklift/off-road ke liye search box.
@@ -123,7 +129,6 @@ sakte hain). `*.xlsx` gitignored hai.
 | **◆ Checkpoint 2** | Owner poori site ko `specs/requirements.md` ke saath review kare |
 | **T036** | Custom domain lagana, `www`/apex redirect. Phir Sanity CORS aur webhook URL naye domain par, aur Vercel mein `NEXT_PUBLIC_SITE_URL` |
 | **T038** | Google Business Profile: naam, pata, phone site se bilkul milein; review link `siteSettings.googleReviewUrl` mein |
-| **Rapid LT** | 4x4 ho gaya (upar dekhein). LT sheet abhi baqi: LT ki category, pattern spellings (Effivan…), "THREE A" alag brand hai ya nahi, `155R13 C 8PLY` jaise sizes, har pattern ki photo |
 | **T039** | Owner ki Gmail ko sanity.io/manage → Members mein **Editor** invite karna; owner guide se khud product add + price change kare |
 
 Tasks status: T001–T035, T037 ✅ · T036 (domain baqi) · T038 · T039 (owner practice baqi)

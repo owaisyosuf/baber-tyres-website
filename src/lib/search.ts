@@ -7,8 +7,10 @@ export interface SearchOption {
 }
 
 // "185/65R15", "185/65 R15", "185/65ZR15", "185 65 15", "185/65/15", and the
-// price-list style "185.65R15" / "185.65.15".
-const METRIC_SIZE = /(?<!\d)(\d{3})\s*[/ .]\s*(\d{2})\s*(?:z?r\s*|[/ .]\s*)(\d{2}(?:\.\d)?)(?![\d.])/i;
+// price-list style "185.65R15" / "185.65.15". A light-truck "C" ("195/70 R15C")
+// is part of the size.
+const METRIC_SIZE =
+  /(?<!\d)(\d{3})\s*[/ .]\s*(\d{2})\s*(?:z?r\s*|[/ .]\s*)(\d{2}(?:\.\d)?)(?:\s*c(?![a-z\d]))?(?![\d.])/i;
 // Words that say nothing about which tyre: dropped before the text search.
 const NOISE = /(?<![\p{L}\p{N}])(?:tyres?|tires?)(?![\p{L}\p{N}])/giu;
 
@@ -82,7 +84,9 @@ export function resolveSearchText(
   const next: ProductFilters = { ...filters };
 
   let sizeLabel: string | undefined;
-  for (const label of sizeLabels) {
+  // A label that is itself a metric size ("165/70 R13C") is left to the metric
+  // filter, so "165/70R13" still lists every 165/70 R13, not just that one.
+  for (const label of sizeLabels.filter((label) => !METRIC_SIZE.test(label))) {
     const pattern = sizeLabelPattern(label);
     const found = pattern && rest.match(pattern);
     if (found) {

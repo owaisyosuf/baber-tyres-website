@@ -63,7 +63,7 @@ describe("resolveSearchText", () => {
   });
 
   describe("product size labels", () => {
-    const labels = ["31x10.50 R15", "205R16C", "11R22.5", "7.00-12"];
+    const labels = ["31x10.50 R15", "205R16C", "11R22.5", "7.00-12", "165/70 R13C"];
     const resolveLabel = (text: string) =>
       resolveSearchText(
         parseCatalogSearchParams({ q: text }).filters,
@@ -107,6 +107,18 @@ describe("resolveSearchText", () => {
     it("does not take a metric size for a label", () => {
       expect(resolveLabel("205/60R16")).toEqual({ width: 205, profile: 60, rim: 16 });
       expect(resolveLabel("265/75R15")).toEqual({ width: 265, profile: 75, rim: 15 });
+    });
+
+    it("leaves a metric-style label to the size filter", () => {
+      expect(resolveLabel("165/70R13")).toEqual({ width: 165, profile: 70, rim: 13 });
+      expect(resolveLabel("165/70 R13C")).toEqual({ width: 165, profile: 70, rim: 13 });
+      expect(resolveLabel("195.70r15 c")).toEqual({ width: 195, profile: 70, rim: 15 });
+      expect(resolveLabel("185/65 R15 cheap")).toEqual({
+        width: 185,
+        profile: 65,
+        rim: 15,
+        text: "cheap",
+      });
     });
   });
 
