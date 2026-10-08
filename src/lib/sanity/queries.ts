@@ -178,12 +178,13 @@ export const FILTER_OPTIONS_QUERY = defineQuery(`{
   "categories": *[_type == "category"] | order(displayOrder asc) {
     name,
     "slug": slug.current
-  }
+  },
+  "sizeLabels": array::unique(*[_type == "product" && defined(sizeLabelOverride)].sizeLabelOverride)
 }`);
 
 export async function getFilterOptions() {
   "use cache";
-  cacheTag("brand", "category");
+  cacheTag("brand", "category", "product");
   cacheLife("max");
   const options = await client.fetch(FILTER_OPTIONS_QUERY);
   return { ...options, ...STANDARD_TYRE_SIZES };

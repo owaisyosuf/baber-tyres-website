@@ -69,7 +69,12 @@ async function Catalog({ searchParams }: { searchParams: SearchParams }) {
     let resolved;
     try {
       const options = await getFilterOptions();
-      resolved = resolveSearchText(filters, options.brands, options.categories);
+      resolved = resolveSearchText(
+        filters,
+        options.brands,
+        options.categories,
+        options.sizeLabels,
+      );
     } catch (error) {
       rethrowDuringBuild(error);
       console.error("Filter options unavailable for search:", error);

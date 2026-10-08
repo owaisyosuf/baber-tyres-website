@@ -71,6 +71,23 @@ sakte hain). `*.xlsx` gitignored hai.
   - IDs `product-rapid-<w>-<p>-r<rim>`, naam `Rapid 185/65 R15`, `createIfNotExists` se banaye.
   - Import script repo mein nahi (ek dafa ka kaam, scratchpad mein tha). Agli dafa yehi tareeqa:
     Excel → JSON → `next-sanity` client → pehle dry run, phir `transaction().createIfNotExists`.
+- **Rapid 4x4 import (2026-10-08):** nayi `RAPID 4X4.xlsx` (8 Oct wali) se **43 naye products
+  published**, sab **SUV / 4x4**. Ab Rapid ke 120 products live hain.
+  - Skip: 285/75 R16 ECO LANDER (sheet mein do dafa) aur 265/65 R17 ECO TERRA (pehle se, price same).
+  - Pattern: ECO LANDER, ECO SAVER ("SAVER" bhi yahi), ECO TERRA, nil → khali.
+  - Ek size, alag pattern = alag product. ID `product-rapid-<pattern>-<w>-<p>-r<rim>` (jaise
+    `product-rapid-ecolander-235-75-r15`), nil wale `product-rapid-<w>-<p>-r<rim>`. Naam mein
+    pattern nahi (card par alag dikhta hai).
+  - Photos `TYRE PHOTOS/` se: ECOLANDER.jpg, ECOSAVER.jpg, NIL.jpg (packed tyre). 1920×1280 black
+    canvas par fit kiye taake card par poora tyre dikhe. ECO TERRA ko Ecoterra 265/65 R17 wali photo.
+  - Purana "Rapid Ecoterra 265/65 R17" ab baqi jaisa: naam `Rapid 265/65 R17`, pattern `ECO TERRA`
+    (slug/URL wahi `rapid-ecoterra-265-65-r17`).
+  - `31x10.50 R15` → width/profile/rim 265/75/15 + size override; `205R16C` → 205/80/16 + override,
+    owner ke kehne par **Truck / Commercial** category mein.
+- **Search fixes (2026-10-08, push baqi tha):** search ab "265.60R18" (dot) samajhta hai, aur
+  products ke `sizeLabelOverride` (31x10.50 R15, 205R16C, 11R22.5…) har tarah likhne par dhoond
+  leta hai ("31.10.50R15", "31x10.5R15", "11/22.5", "700-12"). Home "Find your tyre size" mein
+  sirf Car + SUV / 4x4; neeche truck/LT/forklift/off-road ke liye search box.
 - **Vercel deploy** ho gaya
 - **Sanity CORS + webhook** set (2026-09-29). Test: Studio mein price badla → live par chand seconds
   mein badal gaya ✅
@@ -106,7 +123,7 @@ sakte hain). `*.xlsx` gitignored hai.
 | **◆ Checkpoint 2** | Owner poori site ko `specs/requirements.md` ke saath review kare |
 | **T036** | Custom domain lagana, `www`/apex redirect. Phir Sanity CORS aur webhook URL naye domain par, aur Vercel mein `NEXT_PUBLIC_SITE_URL` |
 | **T038** | Google Business Profile: naam, pata, phone site se bilkul milein; review link `siteSettings.googleReviewUrl` mein |
-| **Rapid LT + 4x4** | Owner **nayi sheet** dega. `RAPID 4X4.xlsx` use **nahi** karni. Sheet aane par poochna: LT ki category, mud tyres Off-road ya SUV, pattern spellings (Effivan, Tuftrail?, X-Terrain?…), "THREE A" alag brand hai ya nahi, `155R13 C 8PLY` / `31x10.50 R15` jaise sizes, aur har pattern ki photo (`ALL.png` car tread hai, 4x4 par ghalat) |
+| **Rapid LT** | 4x4 ho gaya (upar dekhein). LT sheet abhi baqi: LT ki category, pattern spellings (Effivan…), "THREE A" alag brand hai ya nahi, `155R13 C 8PLY` jaise sizes, har pattern ki photo |
 | **T039** | Owner ki Gmail ko sanity.io/manage → Members mein **Editor** invite karna; owner guide se khud product add + price change kare |
 
 Tasks status: T001–T035, T037 ✅ · T036 (domain baqi) · T038 · T039 (owner practice baqi)

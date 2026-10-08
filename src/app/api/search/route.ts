@@ -20,7 +20,12 @@ async function suggestionsFor(text: string): Promise<SuggestionsResponse> {
   cacheLife("hours");
 
   const [options, settings] = await Promise.all([getFilterOptions(), getShopSettings()]);
-  const resolved = resolveSearchText({ text }, options.brands, options.categories);
+  const resolved = resolveSearchText(
+    { text },
+    options.brands,
+    options.categories,
+    options.sizeLabels,
+  );
   const { items, total } = await getProducts(
     { ...resolved, text: resolved.text === undefined ? undefined : prefixMatchText(resolved.text) },
     { pageSize: PRODUCT_SUGGESTIONS },

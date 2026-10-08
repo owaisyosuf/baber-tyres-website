@@ -24,6 +24,8 @@ describe("resolveSearchText", () => {
     "185/65ZR15",
     "185 65 15",
     "185/65/15",
+    "185.65R15",
+    "185.65.15",
     "  185 / 65 r15 ",
   ])("reads %s as a metric size", (text) => {
     expect(resolve(text)).toEqual({ width: 185, profile: 65, rim: 15 });
@@ -58,6 +60,54 @@ describe("resolveSearchText", () => {
   it("leaves commercial sizes as text for the size-label search", () => {
     expect(resolve("11R22.5")).toEqual({ text: "11R22.5" });
     expect(resolve("7.00-12")).toEqual({ text: "7.00-12" });
+  });
+
+  describe("product size labels", () => {
+    const labels = ["31x10.50 R15", "205R16C", "11R22.5", "7.00-12"];
+    const resolveLabel = (text: string) =>
+      resolveSearchText(
+        parseCatalogSearchParams({ q: text }).filters,
+        brands,
+        categories,
+        labels,
+      );
+
+    it.each([
+      "31x10.50 R15",
+      "31.10.50R15",
+      "31.10.50.15",
+      "31X10.5R15",
+      "31x10.50r15",
+      "31-10.50-15",
+      "31 10.50 15",
+      "311050R15",
+    ])("rewrites %s to the stored label", (text) => {
+      expect(resolveLabel(text)).toEqual({ text: "31x10.50 R15" });
+    });
+
+    it.each([
+      ["205R16C", "205R16C"],
+      ["205 R16 C", "205R16C"],
+      ["205r16", "205R16C"],
+      ["11R22.5", "11R22.5"],
+      ["11/22.5", "11R22.5"],
+      ["700-12", "7.00-12"],
+      ["7.00 12", "7.00-12"],
+    ])("rewrites %s to %s", (text, label) => {
+      expect(resolveLabel(text)).toEqual({ text: label });
+    });
+
+    it("keeps a brand and other words alongside the label", () => {
+      expect(resolveLabel("michelin 31.10.50R15 mud")).toEqual({
+        brandSlugs: ["michelin"],
+        text: "31x10.50 R15 mud",
+      });
+    });
+
+    it("does not take a metric size for a label", () => {
+      expect(resolveLabel("205/60R16")).toEqual({ width: 205, profile: 60, rim: 16 });
+      expect(resolveLabel("265/75R15")).toEqual({ width: 265, profile: 75, rim: 15 });
+    });
   });
 
   it("ignores an out-of-range size rather than filtering on it", () => {

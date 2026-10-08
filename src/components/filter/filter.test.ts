@@ -18,6 +18,7 @@ const options: FilterOptions = {
   widths: [185, 195],
   profiles: [65],
   rims: [15, 22.5],
+  sizeLabels: [],
 };
 
 const noop = () => {};
